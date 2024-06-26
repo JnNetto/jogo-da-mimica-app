@@ -28,7 +28,7 @@ class Home extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => Categorys()),
+                    MaterialPageRoute(builder: (context) => Category()),
                   );
                 },
                 child: Text('Jogar'),
