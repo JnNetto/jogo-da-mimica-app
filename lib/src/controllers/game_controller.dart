@@ -1,11 +1,9 @@
 import 'dart:async';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:mimica/src/utils/words.dart';
 
 class GameController {
-  final String category;
+  final List<String> categorys;
   final int initialTime;
   final ValueNotifier<int> remainingTime;
   int score = 0;
@@ -19,26 +17,36 @@ class GameController {
   final Function onTimeUp;
 
   GameController(
-      {required this.category,
+      {required this.categorys,
       required this.initialTime,
       required this.onTimeUp})
       : remainingTime = ValueNotifier<int>(initialTime) {
-    words = _getWordsForCategory(category);
+    words = _getWordsForCategory(categorys);
     currentWord = _getRandomWord();
     _startTimer();
   }
 
-  List<String> _getWordsForCategory(String category) {
-    switch (category) {
-      case 'Verbos':
-        return ListWords.verbos;
-      case 'Filmes':
-        return ['Inception', 'Titanic', 'Avatar', 'Matrix'];
-      case 'Objetos':
-        return ['Mesa', 'Cadeira', 'Computador', 'Lâmpada'];
-      default:
-        return [];
+  List<String> _getWordsForCategory(List<String> categorys) {
+    List<String> words = [];
+    for (String category in categorys) {
+      switch (category) {
+        case 'Geral':
+          words.addAll(ListWords.geral);
+        case 'Verbos':
+          words.addAll(ListWords.verbos);
+        case 'Filmes':
+          words.addAll(ListWords.filmes);
+        case 'Animais':
+          words.addAll(ListWords.animais);
+        case 'Objetos':
+          words.addAll(ListWords.objetos);
+        case 'Profissões':
+          words.addAll(ListWords.profissoes);
+        default:
+          words.addAll([]);
+      }
     }
+    return words;
   }
 
   String _getRandomWord() {
