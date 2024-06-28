@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mimica/src/widgets/button.dart';
 import 'package:mimica/src/utils/colors.dart';
+import 'package:mimica/src/widgets/icon_button.dart';
 import '../../controllers/game_controller.dart';
 
 class GameScreen extends StatefulWidget {
@@ -113,7 +115,7 @@ class _GameScreenState extends State<GameScreen> {
                       );
                     },
                   ),
-                  SizedBox(width: 40),
+                  const SizedBox(width: 40),
                   Container(
                     height: 200,
                     width: 300,
@@ -128,65 +130,33 @@ class _GameScreenState extends State<GameScreen> {
                               textStyle: TextStyle(color: ColorsApp.letters))),
                     ),
                   ),
-                  SizedBox(width: 40),
+                  const SizedBox(width: 40),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      IconButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(ColorsApp.color1),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(1),
-                            ),
-                          ),
-                          shadowColor:
-                              MaterialStateProperty.all(ColorsApp.color4),
-                          elevation: MaterialStateProperty.all(10),
-                        ),
-                        onPressed: () {
-                          setState(() {
-                            _controller.nextWord(true);
-                          });
-                        },
-                        icon: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.check,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      IconButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              MaterialStateProperty.all(ColorsApp.color1),
-                          shape:
-                              MaterialStateProperty.all<RoundedRectangleBorder>(
-                            RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(1),
-                            ),
-                          ),
-                          shadowColor:
-                              MaterialStateProperty.all(ColorsApp.color4),
-                          elevation: MaterialStateProperty.all(10),
-                        ),
+                      CustomIconButton(
+                        elevation: 5,
+                        buttonColor: ColorsApp.color1,
                         onPressed: () {
                           setState(() {
                             _controller.nextWord(false);
                           });
                         },
-                        icon: const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Icon(
-                            Icons.autorenew_rounded,
-                            color: Colors.white,
-                          ),
-                        ),
+                        icon: Icons.check,
+                        padding: 8,
                       ),
+                      const SizedBox(height: 20),
+                      CustomIconButton(
+                        elevation: 5,
+                        buttonColor: ColorsApp.color1,
+                        onPressed: () {
+                          setState(() {
+                            _controller.nextWord(false);
+                          });
+                        },
+                        icon: Icons.autorenew_outlined,
+                        padding: 8,
+                      )
                     ],
                   )
                 ],
@@ -207,54 +177,27 @@ class _GameScreenState extends State<GameScreen> {
           Visibility(
               visible: _controller.isPaused == true,
               child: Center(
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(ColorsApp.color1),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(1),
-                        ),
-                      ),
-                      shadowColor: MaterialStateProperty.all(ColorsApp.color4),
-                      elevation: MaterialStateProperty.all(8),
-                    ),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text("Sair",
-                          style: GoogleFonts.girassol(
-                              fontSize: 24,
-                              textStyle: TextStyle(color: ColorsApp.letters))),
-                    )),
-              )),
+                  child: Button(
+                      elevation: 10,
+                      buttonColor: ColorsApp.color1,
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                      label: "Sair"))),
           Positioned(
-            top: 10,
-            right: 10,
-            child: IconButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(ColorsApp.color1),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(1),
-                  ),
-                ),
-                shadowColor: MaterialStateProperty.all(ColorsApp.color4),
-                elevation: MaterialStateProperty.all(10),
-              ),
-              icon: Icon(
-                _controller.isPaused ? Icons.play_arrow : Icons.pause,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                setState(() {
-                  _controller.pauseTimer();
-                });
-              },
-            ),
-          )
+              top: 10,
+              right: 10,
+              child: CustomIconButton(
+                elevation: 5,
+                buttonColor: ColorsApp.color1,
+                onPressed: () {
+                  setState(() {
+                    _controller.pauseTimer();
+                  });
+                },
+                icon: _controller.isPaused ? Icons.play_arrow : Icons.pause,
+                padding: 0,
+              ))
         ],
       ),
     );

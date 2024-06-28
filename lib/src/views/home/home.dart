@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mimica/src/widgets/button.dart';
 import '../../utils/colors.dart';
 import '../categorys/categorys.dart';
 import '../options/options.dart';
@@ -18,59 +19,29 @@ class Home extends StatelessWidget {
     }
 
     Widget playButton(BuildContext context, double? elevation) {
-      return ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(ColorsApp.color1),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(1),
-            ),
-          ),
-          shadowColor: MaterialStateProperty.all(ColorsApp.color4),
-          elevation: MaterialStateProperty.all(elevation),
-        ),
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Category()),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text('Jogar',
-              style: GoogleFonts.girassol(
-                  fontSize: 20,
-                  textStyle: TextStyle(color: ColorsApp.letters))),
-        ),
-      );
+      return Button(
+          elevation: elevation,
+          buttonColor: ColorsApp.color1,
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => Category()),
+            );
+          },
+          label: "Jogar");
     }
 
     Widget optionsButton(BuildContext context, double? elevation) {
-      return ElevatedButton(
-        style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(ColorsApp.color1),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-            RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(1),
-            ),
-          ),
-          shadowColor: MaterialStateProperty.all(ColorsApp.color4),
-          elevation: MaterialStateProperty.all(8),
-        ),
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) => Options(),
-          );
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Text('Opções',
-              style: GoogleFonts.girassol(
-                  fontSize: 20,
-                  textStyle: TextStyle(color: ColorsApp.letters))),
-        ),
-      );
+      return Button(
+          elevation: elevation,
+          buttonColor: ColorsApp.color1,
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (BuildContext context) => Options(),
+            );
+          },
+          label: "Opções");
     }
 
     return Scaffold(

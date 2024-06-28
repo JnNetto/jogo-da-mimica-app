@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mimica/src/widgets/button.dart';
+import 'package:mimica/src/widgets/icon_button.dart';
 
 import '../../utils/colors.dart';
 import '../gameScreen/game_screen.dart';
@@ -39,7 +41,7 @@ class _CategoryState extends State<Category> {
         buttonColor[category] = ColorsApp.color1;
       } else {
         buttonElevations[category] = 0;
-        buttonColor[category] = ColorsApp.color2;
+        buttonColor[category] = ColorsApp.color3;
       }
     });
   }
@@ -73,38 +75,23 @@ class _CategoryState extends State<Category> {
                     height: 10,
                   ),
                   Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: categorys.map((category) {
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ElevatedButton(
-                            style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                  buttonColor[category]),
-                              shape: MaterialStateProperty.all<
-                                  RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(1),
-                                ),
-                              ),
-                              shadowColor:
-                                  MaterialStateProperty.all(ColorsApp.color4),
-                              elevation: MaterialStateProperty.all(
-                                  buttonElevations[category]),
-                            ),
-                            onPressed: () {
-                              _toggleElevation(category);
-                              _selectedsCategorys(category);
-                            },
-                            child: Text(category,
-                                style: GoogleFonts.girassol(
-                                    fontSize: 20,
-                                    textStyle:
-                                        TextStyle(color: ColorsApp.letters))),
-                          ),
-                        );
-                      }).toList(),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: categorys.map((category) {
+                          return Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Button(
+                                  elevation: buttonElevations[category],
+                                  buttonColor: buttonColor[category]!,
+                                  onPressed: () {
+                                    _toggleElevation(category);
+                                    _selectedsCategorys(category);
+                                  },
+                                  label: category));
+                        }).toList(),
+                      ),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -122,52 +109,36 @@ class _CategoryState extends State<Category> {
                     ),
                   ),
                   SizedBox(height: 20),
-                  ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all(ColorsApp.color1),
-                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(1),
-                        ),
-                      ),
-                      shadowColor: MaterialStateProperty.all(ColorsApp.color4),
-                      elevation: MaterialStateProperty.all(10),
-                    ),
-                    onPressed: () {
-                      if (selectedCategory != []) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GameScreen(
-                              category: selectedCategory,
-                              timeInSeconds: timeInSeconds,
+                  Button(
+                      elevation: 10,
+                      buttonColor: ColorsApp.color1,
+                      onPressed: () {
+                        if (selectedCategory != []) {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => GameScreen(
+                                category: selectedCategory,
+                                timeInSeconds: timeInSeconds,
+                              ),
                             ),
-                          ),
-                        );
-                      }
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text('Iniciar jogo',
-                          style: GoogleFonts.girassol(
-                              fontSize: 20,
-                              textStyle: TextStyle(color: ColorsApp.letters))),
-                    ),
-                  ),
+                          );
+                        }
+                      },
+                      label: "Iniciar jogo")
                 ],
               ),
               Positioned(
                   top: 10,
                   left: 10,
-                  child: IconButton(
+                  child: CustomIconButton(
+                      elevation: 5,
+                      buttonColor: ColorsApp.color1,
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                      ))),
+                      icon: Icons.arrow_back,
+                      padding: 0)),
             ],
           ),
         ),
