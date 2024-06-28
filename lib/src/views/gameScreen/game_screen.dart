@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mimica/src/utils/music.dart';
 import 'package:mimica/src/widgets/button.dart';
 import 'package:mimica/src/utils/colors.dart';
 import 'package:mimica/src/widgets/icon_button.dart';
@@ -53,26 +54,14 @@ class _GameScreenState extends State<GameScreen> {
                     textStyle: TextStyle(color: ColorsApp.letters))),
           ),
           actions: [
-            TextButton(
-              style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(ColorsApp.color3),
-                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                shadowColor: MaterialStateProperty.all(ColorsApp.color1),
-                elevation: MaterialStateProperty.all(10),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-                Navigator.of(context).pop();
-              },
-              child: Text('Voltar',
-                  style: GoogleFonts.girassol(
-                      fontSize: 15,
-                      textStyle: TextStyle(color: ColorsApp.letters))),
-            ),
+            Button(
+                elevation: 10,
+                buttonColor: ColorsApp.color3,
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pop();
+                },
+                label: "Voltar")
           ],
         );
       },

@@ -12,38 +12,6 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     double? elevation = 10;
 
-    Widget title() {
-      return Text("Mímica",
-          style: GoogleFonts.girassol(
-              fontSize: 60, textStyle: TextStyle(color: ColorsApp.letters)));
-    }
-
-    Widget playButton(BuildContext context, double? elevation) {
-      return Button(
-          elevation: elevation,
-          buttonColor: ColorsApp.color1,
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => Category()),
-            );
-          },
-          label: "Jogar");
-    }
-
-    Widget optionsButton(BuildContext context, double? elevation) {
-      return Button(
-          elevation: elevation,
-          buttonColor: ColorsApp.color1,
-          onPressed: () {
-            showDialog(
-              context: context,
-              builder: (BuildContext context) => Options(),
-            );
-          },
-          label: "Opções");
-    }
-
     return Scaffold(
       body: Container(
         color: ColorsApp.background,
@@ -61,5 +29,37 @@ class Home extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Widget title() {
+    return Text("Mímica",
+        style: GoogleFonts.girassol(
+            fontSize: 60, textStyle: TextStyle(color: ColorsApp.letters)));
+  }
+
+  Widget playButton(BuildContext context, double? elevation) {
+    return Button(
+        elevation: elevation,
+        buttonColor: ColorsApp.color1,
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const Category()),
+          );
+        },
+        label: "Jogar");
+  }
+
+  Widget optionsButton(BuildContext context, double? elevation) {
+    return Button(
+        elevation: elevation,
+        buttonColor: ColorsApp.color1,
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) => const Options(),
+          );
+        },
+        label: "Opções");
   }
 }

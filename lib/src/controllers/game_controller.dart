@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:mimica/src/utils/music.dart';
 import 'package:mimica/src/utils/words.dart';
 
 class GameController {
@@ -21,6 +22,7 @@ class GameController {
       required this.initialTime,
       required this.onTimeUp})
       : remainingTime = ValueNotifier<int>(initialTime) {
+    BackgroundMusicPlayer.loadMusic("assets/audio/19299__starrock__pen4.wav");
     words = _getWordsForCategory(categorys);
     currentWord = _getRandomWord();
     _startTimer();
@@ -60,13 +62,20 @@ class GameController {
         remainingTime.value--;
       } else if (remainingTime.value == 0) {
         _timer.cancel();
+        BackgroundMusicPlayer.stopBackgroundMusic();
         onTimeUp();
       }
     });
+    BackgroundMusicPlayer.playBackgroundMusic();
   }
 
   void pauseTimer() {
     isPaused = !isPaused;
+    if (isPaused) {
+      BackgroundMusicPlayer.pauseBackgroundMusic();
+    } else {
+      BackgroundMusicPlayer.resumeBackgroundMusic();
+    }
   }
 
   void nextWord(bool isCorrect) {

@@ -7,7 +7,10 @@ import '../../utils/colors.dart';
 import '../gameScreen/game_screen.dart';
 
 class Category extends StatefulWidget {
+  const Category({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _CategoryState createState() => _CategoryState();
 }
 
@@ -67,82 +70,104 @@ class _CategoryState extends State<Category> {
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text('Selecione a categoria e o tempo',
-                      style: GoogleFonts.girassol(
-                          fontSize: 30,
-                          textStyle: TextStyle(color: ColorsApp.letters))),
-                  SizedBox(
+                  title(),
+                  const SizedBox(
                     height: 10,
                   ),
-                  Center(
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: categorys.map((category) {
-                          return Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Button(
-                                  elevation: buttonElevations[category],
-                                  buttonColor: buttonColor[category]!,
-                                  onPressed: () {
-                                    _toggleElevation(category);
-                                    _selectedsCategorys(category);
-                                  },
-                                  label: category));
-                        }).toList(),
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Container(
-                    width: 200,
-                    child: TextField(
-                      style: TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        labelText: 'Tempo da Rodada (segundos)',
-                      ),
-                      keyboardType: TextInputType.number,
-                      onChanged: (value) {
-                        timeInSeconds = int.tryParse(value) ?? 60;
-                      },
-                    ),
-                  ),
-                  SizedBox(height: 20),
-                  Button(
-                      elevation: 10,
-                      buttonColor: ColorsApp.color1,
-                      onPressed: () {
-                        if (selectedCategory != []) {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => GameScreen(
-                                category: selectedCategory,
-                                timeInSeconds: timeInSeconds,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      label: "Iniciar jogo")
+                  selectCategorys(categorys, buttonColor, buttonElevations),
+                  const SizedBox(height: 20),
+                  inputTime(),
+                  const SizedBox(height: 20),
+                  buttonToStart(selectedCategory, timeInSeconds)
                 ],
               ),
-              Positioned(
-                  top: 10,
-                  left: 10,
-                  child: CustomIconButton(
-                      elevation: 5,
-                      buttonColor: ColorsApp.color1,
-                      onPressed: () {
-                        Navigator.pop(context);
-                      },
-                      icon: Icons.arrow_back,
-                      padding: 0)),
+              backButton()
             ],
           ),
         ),
       ),
     );
+  }
+
+  Widget title() {
+    return Text('Selecione a categoria e o tempo',
+        style: GoogleFonts.girassol(
+            fontSize: 30, textStyle: TextStyle(color: ColorsApp.letters)));
+  }
+
+  Widget selectCategorys(List<String> categorys, Map<String, Color> buttonColor,
+      Map<String, double> buttonElevations) {
+    return Center(
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: categorys.map((category) {
+            return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Button(
+                    elevation: buttonElevations[category],
+                    buttonColor: buttonColor[category]!,
+                    onPressed: () {
+                      _toggleElevation(category);
+                      _selectedsCategorys(category);
+                    },
+                    label: category));
+          }).toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget inputTime() {
+    return SizedBox(
+      width: 200,
+      child: TextField(
+        style: const TextStyle(color: Colors.white),
+        decoration: const InputDecoration(
+          labelText: 'Tempo da Rodada (segundos)',
+        ),
+        keyboardType: TextInputType.number,
+        onChanged: (value) {
+          setState(() {
+            timeInSeconds = int.tryParse(value) ?? 60;
+          });
+        },
+      ),
+    );
+  }
+
+  Widget buttonToStart(List<String> selectedCategory, int timeInSeconds) {
+    return Button(
+        elevation: 10,
+        buttonColor: ColorsApp.color1,
+        onPressed: () {
+          if (selectedCategory != []) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => GameScreen(
+                  category: selectedCategory,
+                  timeInSeconds: timeInSeconds,
+                ),
+              ),
+            );
+          }
+        },
+        label: "Iniciar jogo");
+  }
+
+  Widget backButton() {
+    return Positioned(
+        top: 10,
+        left: 10,
+        child: CustomIconButton(
+            elevation: 5,
+            buttonColor: ColorsApp.color1,
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icons.arrow_back,
+            padding: 0));
   }
 }
