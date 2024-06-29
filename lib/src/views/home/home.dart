@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mimica/src/utils/music.dart';
 import 'package:mimica/src/widgets/button.dart';
 import '../../utils/colors.dart';
 import '../categorys/categorys.dart';
 import '../options/options.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  State<Home> createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  @override
+  void initState() {
+    BackgroundMusicPlayer.playBackgroundMusic(1);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +54,9 @@ class Home extends StatelessWidget {
         elevation: elevation,
         buttonColor: ColorsApp.color1,
         onPressed: () {
+          BackgroundMusicPlayer.loadMusic2();
+          BackgroundMusicPlayer.playBackgroundMusic(2);
+
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Category()),
@@ -55,6 +70,9 @@ class Home extends StatelessWidget {
         elevation: elevation,
         buttonColor: ColorsApp.color1,
         onPressed: () {
+          BackgroundMusicPlayer.loadMusic2();
+          BackgroundMusicPlayer.playBackgroundMusic(2);
+
           showDialog(
             context: context,
             builder: (BuildContext context) => const Options(),

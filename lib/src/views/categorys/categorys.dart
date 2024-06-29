@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mimica/src/utils/music.dart';
 import 'package:mimica/src/widgets/button.dart';
 import 'package:mimica/src/widgets/icon_button.dart';
 
@@ -109,6 +110,8 @@ class _CategoryState extends State<Category> {
                     elevation: buttonElevations[category],
                     buttonColor: buttonColor[category]!,
                     onPressed: () {
+                      BackgroundMusicPlayer.loadMusic2();
+                      BackgroundMusicPlayer.playBackgroundMusic(2);
                       _toggleElevation(category);
                       _selectedsCategorys(category);
                     },
@@ -143,6 +146,9 @@ class _CategoryState extends State<Category> {
         buttonColor: ColorsApp.color1,
         onPressed: () {
           if (selectedCategory != []) {
+            BackgroundMusicPlayer.stopBackgroundMusic(1);
+            BackgroundMusicPlayer.loadMusic2();
+            BackgroundMusicPlayer.playBackgroundMusic(2);
             Navigator.push(
               context,
               MaterialPageRoute(
@@ -165,6 +171,8 @@ class _CategoryState extends State<Category> {
             elevation: 5,
             buttonColor: ColorsApp.color1,
             onPressed: () {
+              BackgroundMusicPlayer.loadMusic2();
+              BackgroundMusicPlayer.playBackgroundMusic(2);
               Navigator.pop(context);
             },
             icon: Icons.arrow_back,

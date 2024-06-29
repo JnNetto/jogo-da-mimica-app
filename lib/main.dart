@@ -26,6 +26,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     BackgroundMusicPlayer.initialize();
+    BackgroundMusicPlayer.loadMusic1();
   }
 
   @override
@@ -37,13 +38,19 @@ class _MyAppState extends State<MyApp> {
   void didChangeAppLifecycleState(AppLifecycleState state) {
     switch (state) {
       case AppLifecycleState.inactive:
-        BackgroundMusicPlayer.pauseBackgroundMusic();
+        BackgroundMusicPlayer.pauseBackgroundMusic(1);
+        BackgroundMusicPlayer.pauseBackgroundMusic(2);
+        BackgroundMusicPlayer.pauseBackgroundMusic(3);
         break;
       case AppLifecycleState.paused:
-        BackgroundMusicPlayer.pauseBackgroundMusic();
+        BackgroundMusicPlayer.pauseBackgroundMusic(1);
+        BackgroundMusicPlayer.pauseBackgroundMusic(2);
+        BackgroundMusicPlayer.pauseBackgroundMusic(3);
         break;
       case AppLifecycleState.resumed:
-        BackgroundMusicPlayer.resumeBackgroundMusic();
+        BackgroundMusicPlayer.resumeBackgroundMusic(1);
+        BackgroundMusicPlayer.resumeBackgroundMusic(2);
+        BackgroundMusicPlayer.resumeBackgroundMusic(3);
         SystemChrome.setPreferredOrientations([
           DeviceOrientation.landscapeRight,
           DeviceOrientation.landscapeLeft,
@@ -51,10 +58,14 @@ class _MyAppState extends State<MyApp> {
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
         break;
       case AppLifecycleState.detached:
-        BackgroundMusicPlayer.stopBackgroundMusic();
+        BackgroundMusicPlayer.stopBackgroundMusic(1);
+        BackgroundMusicPlayer.stopBackgroundMusic(2);
+        BackgroundMusicPlayer.stopBackgroundMusic(3);
         break;
       case AppLifecycleState.hidden:
-        BackgroundMusicPlayer.pauseBackgroundMusic();
+        BackgroundMusicPlayer.pauseBackgroundMusic(1);
+        BackgroundMusicPlayer.pauseBackgroundMusic(2);
+        BackgroundMusicPlayer.pauseBackgroundMusic(3);
         break;
     }
   }

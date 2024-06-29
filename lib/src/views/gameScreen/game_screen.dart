@@ -58,6 +58,7 @@ class _GameScreenState extends State<GameScreen> {
                 elevation: 10,
                 buttonColor: ColorsApp.color3,
                 onPressed: () {
+                  BackgroundMusicPlayer.playBackgroundMusic(1);
                   Navigator.of(context).pop();
                   Navigator.of(context).pop();
                 },
@@ -114,6 +115,7 @@ class _GameScreenState extends State<GameScreen> {
                     ),
                     child: Center(
                       child: Text(_controller.currentWord,
+                          textAlign: TextAlign.center,
                           style: GoogleFonts.girassol(
                               fontSize: 24,
                               textStyle: TextStyle(color: ColorsApp.letters))),
@@ -127,6 +129,8 @@ class _GameScreenState extends State<GameScreen> {
                         elevation: 5,
                         buttonColor: ColorsApp.color1,
                         onPressed: () {
+                          BackgroundMusicPlayer.loadMusic2();
+                          BackgroundMusicPlayer.playBackgroundMusic(2);
                           setState(() {
                             _controller.nextWord(false);
                           });
@@ -139,6 +143,8 @@ class _GameScreenState extends State<GameScreen> {
                         elevation: 5,
                         buttonColor: ColorsApp.color1,
                         onPressed: () {
+                          BackgroundMusicPlayer.loadMusic2();
+                          BackgroundMusicPlayer.playBackgroundMusic(2);
                           setState(() {
                             _controller.nextWord(false);
                           });
@@ -170,6 +176,9 @@ class _GameScreenState extends State<GameScreen> {
                       elevation: 10,
                       buttonColor: ColorsApp.color1,
                       onPressed: () {
+                        BackgroundMusicPlayer.loadMusic2();
+                        BackgroundMusicPlayer.playBackgroundMusic(2);
+                        BackgroundMusicPlayer.playBackgroundMusic(1);
                         Navigator.pop(context);
                       },
                       label: "Sair"))),
@@ -180,6 +189,8 @@ class _GameScreenState extends State<GameScreen> {
                 elevation: 5,
                 buttonColor: ColorsApp.color1,
                 onPressed: () {
+                  BackgroundMusicPlayer.loadMusic2();
+                  BackgroundMusicPlayer.playBackgroundMusic(2);
                   setState(() {
                     _controller.pauseTimer();
                   });

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:mimica/src/utils/music.dart';
 import 'package:mimica/src/utils/words.dart';
 
@@ -22,7 +23,6 @@ class GameController {
       required this.initialTime,
       required this.onTimeUp})
       : remainingTime = ValueNotifier<int>(initialTime) {
-    BackgroundMusicPlayer.loadMusic("assets/audio/19299__starrock__pen4.wav");
     words = _getWordsForCategory(categorys);
     currentWord = _getRandomWord();
     _startTimer();
@@ -58,23 +58,33 @@ class GameController {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      BackgroundMusicPlayer.playBackgroundMusic(3);
       if (remainingTime.value > 0 && !isPaused) {
         remainingTime.value--;
+        _playTickSound();
       } else if (remainingTime.value == 0) {
         _timer.cancel();
-        BackgroundMusicPlayer.stopBackgroundMusic();
+        BackgroundMusicPlayer.stopBackgroundMusic(3);
         onTimeUp();
       }
     });
-    BackgroundMusicPlayer.playBackgroundMusic();
+  }
+
+  Future<void> _playTickSound() async {
+    try {
+      BackgroundMusicPlayer.loadMusic3();
+      BackgroundMusicPlayer.playBackgroundMusic(3);
+    } catch (e) {
+      print('Error playing sound: $e');
+    }
   }
 
   void pauseTimer() {
     isPaused = !isPaused;
     if (isPaused) {
-      BackgroundMusicPlayer.pauseBackgroundMusic();
+      BackgroundMusicPlayer.pauseBackgroundMusic(3);
     } else {
-      BackgroundMusicPlayer.resumeBackgroundMusic();
+      BackgroundMusicPlayer.resumeBackgroundMusic(3);
     }
   }
 
