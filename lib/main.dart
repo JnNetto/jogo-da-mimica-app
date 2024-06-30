@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mimica/src/utils/splash_screen.dart';
-
 import 'src/utils/music.dart';
-import 'src/views/home/home.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

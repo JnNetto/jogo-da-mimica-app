@@ -29,73 +29,85 @@ class _OptionsState extends State<Options> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            Text('Opções',
-                style: GoogleFonts.girassol(
-                    fontSize: 28,
-                    textStyle: TextStyle(color: ColorsApp.letters))),
+            title(),
             const SizedBox(
               height: 10,
             ),
-            Column(
-              children: [
-                Text('Volume da música',
-                    style: GoogleFonts.girassol(
-                        fontSize: 17,
-                        textStyle: TextStyle(color: ColorsApp.letters))),
-                Slider(
-                  value: volume1,
-                  activeColor: Colors.blueGrey,
-                  onChanged: (volume) {
-                    setState(() {
-                      volume1 = volume;
-                    });
-                    BackgroundMusicPlayer.setVolume(volume, 1);
-                  },
-                  min: 0.0,
-                  max: 1.0,
-                  divisions: 100,
-                  label: "${(volume1 * 100).toInt()}",
-                ),
-              ],
-            ),
-            Column(
-              children: [
-                Text('Volume do toque',
-                    style: GoogleFonts.girassol(
-                        fontSize: 17,
-                        textStyle: TextStyle(color: ColorsApp.letters))),
-                Slider(
-                  value: volume2,
-                  activeColor: Colors.blueGrey,
-                  onChanged: (volume) {
-                    setState(() {
-                      volume2 = volume;
-                    });
-                    BackgroundMusicPlayer.setVolume(volume, 2);
-                  },
-                  min: 0.0,
-                  max: 1.0,
-                  divisions: 100,
-                  label: "${(volume2 * 100).toInt()}",
-                ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: TextButton(
-                child: Text('Fechar',
-                    style: GoogleFonts.girassol(
-                        fontSize: 15,
-                        textStyle: TextStyle(color: ColorsApp.letters))),
-                onPressed: () {
-                  BackgroundMusicPlayer.loadMusic2();
-                  BackgroundMusicPlayer.playBackgroundMusic(2);
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
+            musicSlider(),
+            soundsSlider(),
+            backButton()
           ],
         ),
+      ),
+    );
+  }
+
+  Widget title() {
+    return Text('Opções',
+        style: GoogleFonts.girassol(
+            fontSize: 28, textStyle: TextStyle(color: ColorsApp.letters)));
+  }
+
+  Widget musicSlider() {
+    return Column(
+      children: [
+        Text('Volume da música',
+            style: GoogleFonts.girassol(
+                fontSize: 17, textStyle: TextStyle(color: ColorsApp.letters))),
+        Slider(
+          value: volume1,
+          activeColor: Colors.blueGrey,
+          onChanged: (volume) {
+            setState(() {
+              volume1 = volume;
+            });
+            BackgroundMusicPlayer.setVolume(volume, 1);
+          },
+          min: 0.0,
+          max: 1.0,
+          divisions: 100,
+          label: "${(volume1 * 100).toInt()}",
+        ),
+      ],
+    );
+  }
+
+  Widget soundsSlider() {
+    return Column(
+      children: [
+        Text('Volume do toque',
+            style: GoogleFonts.girassol(
+                fontSize: 17, textStyle: TextStyle(color: ColorsApp.letters))),
+        Slider(
+          value: volume2,
+          activeColor: Colors.blueGrey,
+          onChanged: (volume) {
+            setState(() {
+              volume2 = volume;
+            });
+            BackgroundMusicPlayer.setVolume(volume, 2);
+          },
+          min: 0.0,
+          max: 1.0,
+          divisions: 100,
+          label: "${(volume2 * 100).toInt()}",
+        ),
+      ],
+    );
+  }
+
+  Widget backButton() {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: TextButton(
+        child: Text('Fechar',
+            style: GoogleFonts.girassol(
+                fontSize: 15, textStyle: TextStyle(color: ColorsApp.letters))),
+        onPressed: () {
+          BackgroundMusicPlayer.loadMusic2();
+          BackgroundMusicPlayer.playBackgroundMusic(2);
+          Navigator.of(context).pop();
+        },
       ),
     );
   }

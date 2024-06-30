@@ -325,8 +325,6 @@ class _InstructionsState extends State<Instructions> {
                                     onPressed: () {
                                       BackgroundMusicPlayer.playBackgroundMusic(
                                           1);
-                                      Navigator.of(context).pop();
-                                      Navigator.of(context).pop();
                                     },
                                     label: "Voltar")
                               ],

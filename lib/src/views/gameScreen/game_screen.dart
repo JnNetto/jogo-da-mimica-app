@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mimica/src/utils/music.dart';
 import 'package:mimica/src/widgets/button.dart';
@@ -23,7 +22,7 @@ class GameScreen extends StatefulWidget {
 }
 
 class _GameScreenState extends State<GameScreen> {
-  late GameController _controller;
+  late GameController controller;
   late Timer timer;
   int waitingTime = 3;
   bool timeIsUp = false;
@@ -32,7 +31,7 @@ class _GameScreenState extends State<GameScreen> {
   void initState() {
     super.initState();
     _startTimer();
-    _controller = GameController(
+    controller = GameController(
       categorys: widget.category,
       initialTime: widget.timeInSeconds,
       onTimeUp: _showResults,
@@ -98,7 +97,7 @@ class _GameScreenState extends State<GameScreen> {
                   text: 'Palavras Acertadas: ',
                 ),
                 TextSpan(
-                  text: '${_controller.score}\n',
+                  text: '${controller.score}\n',
                   style: GoogleFonts.girassol(
                     fontSize: 20,
                     textStyle: TextStyle(color: ColorsApp.letters),
@@ -134,8 +133,8 @@ class _GameScreenState extends State<GameScreen> {
   }
 
   List<TextSpan> _getWordSpans() {
-    List<String> wordsPassed = _controller.wordsPassed;
-    List<String> wordsCorrect = _controller.wordsCorrect;
+    List<String> wordsPassed = controller.wordsPassed;
+    List<String> wordsCorrect = controller.wordsCorrect;
 
     List<TextSpan> spans = [];
 
@@ -149,7 +148,7 @@ class _GameScreenState extends State<GameScreen> {
             fontSize: 20,
             textStyle: TextStyle(
               color: ColorsApp.letters,
-              fontWeight: isCorrect ? FontWeight.bold : FontWeight.normal,
+              fontWeight: isCorrect ? FontWeight.w900 : FontWeight.normal,
             ),
           ),
         ),
@@ -182,139 +181,168 @@ class _GameScreenState extends State<GameScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  ValueListenableBuilder<int>(
-                    valueListenable: _controller.remainingTime,
-                    builder: (context, value, child) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          color: ColorsApp.color1,
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(15.0),
-                          child: Text('$value',
-                              style: GoogleFonts.girassol(
-                                  fontSize: 24,
-                                  textStyle:
-                                      TextStyle(color: ColorsApp.letters))),
-                        ),
-                      );
-                    },
-                  ),
+                  timerScreen(controller),
                   const SizedBox(width: 40),
-                  Container(
-                    height: 200,
-                    width: 300,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: ColorsApp.color1,
-                    ),
-                    child: Center(
-                      child: Text(_controller.currentWord,
-                          textAlign: TextAlign.center,
-                          style: GoogleFonts.girassol(
-                              fontSize: 24,
-                              textStyle: TextStyle(color: ColorsApp.letters))),
-                    ),
-                  ),
+                  wordScreen(controller),
                   const SizedBox(width: 40),
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CustomIconButton(
-                        elevation: 5,
-                        buttonColor: ColorsApp.color1,
-                        onPressed: () {
-                          BackgroundMusicPlayer.loadMusic2();
-                          BackgroundMusicPlayer.playBackgroundMusic(2);
-                          setState(() {
-                            _controller.nextWord(true);
-                          });
-                        },
-                        icon: Icons.check,
-                        padding: 8,
-                      ),
+                      rightButton(controller),
                       const SizedBox(height: 20),
-                      CustomIconButton(
-                        elevation: 5,
-                        buttonColor: ColorsApp.color1,
-                        onPressed: () {
-                          BackgroundMusicPlayer.loadMusic2();
-                          BackgroundMusicPlayer.playBackgroundMusic(2);
-                          setState(() {
-                            _controller.nextWord(false);
-                          });
-                        },
-                        icon: Icons.autorenew_outlined,
-                        padding: 8,
-                      )
+                      shiftButton(controller),
                     ],
                   )
                 ],
               ),
             ),
           ),
-          Visibility(
-            visible: _controller.isPaused == true,
-            child: Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                child: Container(
-                  color: Colors.black.withOpacity(0.5),
-                ),
-              ),
-            ),
+          blurryScreen(),
+          backButton(),
+          pauseButton(),
+          intermidateTimeScreen()
+        ],
+      ),
+    );
+  }
+
+  Widget timerScreen(GameController controller) {
+    return ValueListenableBuilder<int>(
+      valueListenable: controller.remainingTime,
+      builder: (context, value, child) {
+        return Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            color: ColorsApp.color1,
           ),
-          Visibility(
-              visible: _controller.isPaused == true,
-              child: Center(
-                  child: Button(
-                      elevation: 10,
-                      buttonColor: ColorsApp.color1,
-                      onPressed: () {
-                        BackgroundMusicPlayer.loadMusic2();
-                        BackgroundMusicPlayer.playBackgroundMusic(2);
-                        BackgroundMusicPlayer.playBackgroundMusic(1);
-                        Navigator.pop(context);
-                      },
-                      label: "Sair"))),
-          Positioned(
-              top: 10,
-              right: 10,
-              child: CustomIconButton(
-                elevation: 5,
+          child: Padding(
+            padding: const EdgeInsets.all(15.0),
+            child: Text('$value',
+                style: GoogleFonts.girassol(
+                    fontSize: 24,
+                    textStyle: TextStyle(color: ColorsApp.letters))),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget wordScreen(GameController controller) {
+    return Container(
+      height: 200,
+      width: 300,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(8),
+        color: ColorsApp.color1,
+      ),
+      child: Center(
+        child: Text(controller.currentWord,
+            textAlign: TextAlign.center,
+            style: GoogleFonts.girassol(
+                fontSize: 24, textStyle: TextStyle(color: ColorsApp.letters))),
+      ),
+    );
+  }
+
+  Widget rightButton(GameController controller) {
+    return CustomIconButton(
+      elevation: 5,
+      buttonColor: ColorsApp.color1,
+      onPressed: () {
+        BackgroundMusicPlayer.loadMusic2();
+        BackgroundMusicPlayer.playBackgroundMusic(2);
+        setState(() {
+          controller.nextWord(true);
+        });
+      },
+      icon: Icons.check,
+      padding: 8,
+    );
+  }
+
+  Widget shiftButton(GameController controller) {
+    return CustomIconButton(
+      elevation: 5,
+      buttonColor: ColorsApp.color1,
+      onPressed: () {
+        BackgroundMusicPlayer.loadMusic2();
+        BackgroundMusicPlayer.playBackgroundMusic(2);
+        setState(() {
+          controller.nextWord(false);
+        });
+      },
+      icon: Icons.autorenew_outlined,
+      padding: 8,
+    );
+  }
+
+  Widget blurryScreen() {
+    return Visibility(
+      visible: controller.isPaused == true,
+      child: Positioned.fill(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: Container(
+            color: Colors.black.withOpacity(0.5),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget backButton() {
+    return Visibility(
+        visible: controller.isPaused == true,
+        child: Center(
+            child: Button(
+                elevation: 10,
                 buttonColor: ColorsApp.color1,
                 onPressed: () {
                   BackgroundMusicPlayer.loadMusic2();
                   BackgroundMusicPlayer.playBackgroundMusic(2);
-                  setState(() {
-                    _controller.pauseTimer();
-                  });
+                  BackgroundMusicPlayer.playBackgroundMusic(1);
+                  Navigator.pop(context);
                 },
-                icon: _controller.isPaused ? Icons.play_arrow : Icons.pause,
-                padding: 0,
+                label: "Sair")));
+  }
+
+  Widget pauseButton() {
+    return Positioned(
+        top: 10,
+        right: 10,
+        child: CustomIconButton(
+          elevation: 5,
+          buttonColor: ColorsApp.color1,
+          onPressed: () {
+            BackgroundMusicPlayer.loadMusic2();
+            BackgroundMusicPlayer.playBackgroundMusic(2);
+            setState(() {
+              controller.pauseTimer();
+            });
+          },
+          icon: controller.isPaused ? Icons.play_arrow : Icons.pause,
+          padding: 0,
+        ));
+  }
+
+  Widget intermidateTimeScreen() {
+    return Visibility(
+      visible: timeIsUp == false,
+      child: Positioned.fill(
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+          child: Container(
+              color: Colors.black.withOpacity(0.5),
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Center(
+                  child: Text('$waitingTime',
+                      style: GoogleFonts.girassol(
+                          fontSize: 24,
+                          textStyle: TextStyle(color: ColorsApp.letters))),
+                ),
               )),
-          Visibility(
-            visible: timeIsUp == false,
-            child: Positioned.fill(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
-                child: Container(
-                    color: Colors.black.withOpacity(0.5),
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Center(
-                        child: Text('$waitingTime',
-                            style: GoogleFonts.girassol(
-                                fontSize: 24,
-                                textStyle:
-                                    TextStyle(color: ColorsApp.letters))),
-                      ),
-                    )),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
