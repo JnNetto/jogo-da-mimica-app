@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:mimica/src/utils/splash_screen.dart';
 
 import 'src/utils/music.dart';
 import 'src/views/home/home.dart';
@@ -21,36 +22,41 @@ class MyApp extends StatefulWidget {
   State<MyApp> createState() => _MyAppState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     BackgroundMusicPlayer.initialize();
     BackgroundMusicPlayer.loadMusic1();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     BackgroundMusicPlayer.disposeBackgroundMusic();
     super.dispose();
   }
 
+  @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
     switch (state) {
       case AppLifecycleState.inactive:
-        BackgroundMusicPlayer.pauseBackgroundMusic(1);
-        BackgroundMusicPlayer.pauseBackgroundMusic(2);
-        BackgroundMusicPlayer.pauseBackgroundMusic(3);
         break;
       case AppLifecycleState.paused:
         BackgroundMusicPlayer.pauseBackgroundMusic(1);
         BackgroundMusicPlayer.pauseBackgroundMusic(2);
         BackgroundMusicPlayer.pauseBackgroundMusic(3);
+        BackgroundMusicPlayer.pauseBackgroundMusic(4);
+        BackgroundMusicPlayer.pauseBackgroundMusic(5);
         break;
       case AppLifecycleState.resumed:
         BackgroundMusicPlayer.resumeBackgroundMusic(1);
         BackgroundMusicPlayer.resumeBackgroundMusic(2);
         BackgroundMusicPlayer.resumeBackgroundMusic(3);
+        BackgroundMusicPlayer.resumeBackgroundMusic(4);
+        BackgroundMusicPlayer.resumeBackgroundMusic(5);
         SystemChrome.setPreferredOrientations([
           DeviceOrientation.landscapeRight,
           DeviceOrientation.landscapeLeft,
@@ -61,11 +67,15 @@ class _MyAppState extends State<MyApp> {
         BackgroundMusicPlayer.stopBackgroundMusic(1);
         BackgroundMusicPlayer.stopBackgroundMusic(2);
         BackgroundMusicPlayer.stopBackgroundMusic(3);
+        BackgroundMusicPlayer.stopBackgroundMusic(4);
+        BackgroundMusicPlayer.stopBackgroundMusic(5);
         break;
       case AppLifecycleState.hidden:
         BackgroundMusicPlayer.pauseBackgroundMusic(1);
         BackgroundMusicPlayer.pauseBackgroundMusic(2);
         BackgroundMusicPlayer.pauseBackgroundMusic(3);
+        BackgroundMusicPlayer.pauseBackgroundMusic(4);
+        BackgroundMusicPlayer.pauseBackgroundMusic(5);
         break;
     }
   }
@@ -80,6 +90,6 @@ class _MyAppState extends State<MyApp> {
               seedColor: const Color.fromARGB(255, 0, 0, 0)),
           useMaterial3: true,
         ),
-        home: Home());
+        home: const SplashPage());
   }
 }

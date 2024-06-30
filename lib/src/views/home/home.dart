@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:lottie/lottie.dart';
 import 'package:mimica/src/utils/music.dart';
 import 'package:mimica/src/widgets/button.dart';
 import '../../utils/colors.dart';
 import '../categorys/categorys.dart';
+import '../instructions/instructions.dart';
 import '../options/options.dart';
 
 class Home extends StatefulWidget {
@@ -16,6 +19,7 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
+    BackgroundMusicPlayer.loadMusic1();
     BackgroundMusicPlayer.playBackgroundMusic(1);
     super.initState();
   }
@@ -24,23 +28,31 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     double? elevation = 10;
 
-    return Scaffold(
-      body: Container(
+    return Scaffold(body: LayoutBuilder(builder: (context, constraints) {
+      return Container(
         color: ColorsApp.background,
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              title(),
-              const SizedBox(height: 20),
-              playButton(context, elevation),
-              const SizedBox(height: 20),
-              optionsButton(context, elevation)
-            ],
-          ),
+        child: Stack(
+          children: [
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  title(),
+                  const SizedBox(height: 20),
+                  playButton(context, elevation),
+                  const SizedBox(height: 20),
+                  instructionsButton(context, constraints, elevation),
+                  const SizedBox(height: 20),
+                  optionsButton(context, constraints, elevation),
+                ],
+              ),
+            ),
+            creator(),
+            version()
+          ],
         ),
-      ),
-    );
+      );
+    }));
   }
 
   Widget title() {
@@ -56,7 +68,6 @@ class _HomeState extends State<Home> {
         onPressed: () {
           BackgroundMusicPlayer.loadMusic2();
           BackgroundMusicPlayer.playBackgroundMusic(2);
-
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Category()),
@@ -65,19 +76,53 @@ class _HomeState extends State<Home> {
         label: "Jogar");
   }
 
-  Widget optionsButton(BuildContext context, double? elevation) {
+  Widget optionsButton(
+      BuildContext context, BoxConstraints constraints, double? elevation) {
     return Button(
         elevation: elevation,
         buttonColor: ColorsApp.color1,
         onPressed: () {
           BackgroundMusicPlayer.loadMusic2();
           BackgroundMusicPlayer.playBackgroundMusic(2);
-
           showDialog(
             context: context,
-            builder: (BuildContext context) => const Options(),
+            builder: (BuildContext context) => Options(constraints),
           );
         },
         label: "Opções");
+  }
+
+  Widget instructionsButton(
+      BuildContext context, BoxConstraints constraints, double elevation) {
+    return Button(
+        elevation: elevation,
+        buttonColor: ColorsApp.color1,
+        onPressed: () {
+          BackgroundMusicPlayer.loadMusic2();
+          BackgroundMusicPlayer.playBackgroundMusic(2);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Instructions(constraints)),
+          );
+        },
+        label: "Instruções");
+  }
+
+  Widget creator() {
+    return Positioned(
+        bottom: 10,
+        left: 10,
+        child: Text("by: JnNetto",
+            style: GoogleFonts.girassol(
+                fontSize: 20, textStyle: TextStyle(color: ColorsApp.letters))));
+  }
+
+  version() {
+    return Positioned(
+        bottom: 10,
+        right: 10,
+        child: Text("Versão: 1.0",
+            style: GoogleFonts.girassol(
+                fontSize: 20, textStyle: TextStyle(color: ColorsApp.letters))));
   }
 }

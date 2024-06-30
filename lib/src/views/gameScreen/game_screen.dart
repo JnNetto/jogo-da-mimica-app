@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
@@ -13,23 +14,63 @@ class GameScreen extends StatefulWidget {
   final List<String> category;
   final int timeInSeconds;
 
-  GameScreen({required this.category, required this.timeInSeconds});
+  const GameScreen(
+      {super.key, required this.category, required this.timeInSeconds});
 
   @override
+  // ignore: library_private_types_in_public_api
   _GameScreenState createState() => _GameScreenState();
 }
 
 class _GameScreenState extends State<GameScreen> {
   late GameController _controller;
+  late Timer timer;
+  int waitingTime = 3;
+  bool timeIsUp = false;
 
   @override
   void initState() {
     super.initState();
+    _startTimer();
     _controller = GameController(
       categorys: widget.category,
       initialTime: widget.timeInSeconds,
       onTimeUp: _showResults,
     );
+  }
+
+  void _startTimer() {
+    timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      setState(() {
+        waitingTime--;
+        BackgroundMusicPlayer.loadMusic3();
+        _playTickSound();
+      });
+      if (waitingTime == 0) {
+        BackgroundMusicPlayer.loadMusic4();
+        _playWhistleSound();
+        setState(() {
+          timeIsUp = true;
+          timer.cancel();
+        });
+      }
+    });
+  }
+
+  Future<void> _playTickSound() async {
+    try {
+      BackgroundMusicPlayer.playBackgroundMusic(3);
+    } catch (e) {
+      print('Error playing sound: $e');
+    }
+  }
+
+  Future<void> _playWhistleSound() async {
+    try {
+      BackgroundMusicPlayer.playBackgroundMusic(4);
+    } catch (e) {
+      print('Error playing sound: $e');
+    }
   }
 
   void _showResults() {
@@ -46,13 +87,36 @@ class _GameScreenState extends State<GameScreen> {
                     textStyle: TextStyle(color: ColorsApp.letters))),
           ),
           content: SingleChildScrollView(
-            child: Text(
-                'Palavras Acertadas: ${_controller.score}\n'
-                'Palavras Passadas: ${_controller.wordsPassed.join(', ')}',
-                style: GoogleFonts.girassol(
-                    fontSize: 24,
-                    textStyle: TextStyle(color: ColorsApp.letters))),
-          ),
+              child: RichText(
+            text: TextSpan(
+              style: GoogleFonts.girassol(
+                fontSize: 24,
+                textStyle: TextStyle(color: ColorsApp.letters),
+              ),
+              children: [
+                const TextSpan(
+                  text: 'Palavras Acertadas: ',
+                ),
+                TextSpan(
+                  text: '${_controller.score}\n',
+                  style: GoogleFonts.girassol(
+                    fontSize: 20,
+                    textStyle: TextStyle(color: ColorsApp.letters),
+                  ),
+                ),
+                const TextSpan(
+                  text: 'Palavras Passadas: ',
+                ),
+                TextSpan(
+                  children: _getWordSpans(),
+                  style: GoogleFonts.girassol(
+                    fontSize: 20,
+                    textStyle: TextStyle(color: ColorsApp.letters),
+                  ),
+                ),
+              ],
+            ),
+          )),
           actions: [
             Button(
                 elevation: 10,
@@ -69,10 +133,42 @@ class _GameScreenState extends State<GameScreen> {
     );
   }
 
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
+  List<TextSpan> _getWordSpans() {
+    List<String> wordsPassed = _controller.wordsPassed;
+    List<String> wordsCorrect = _controller.wordsCorrect;
+
+    List<TextSpan> spans = [];
+
+    for (int i = 0; i < wordsPassed.length; i++) {
+      String word = wordsPassed[i];
+      bool isCorrect = wordsCorrect.contains(word);
+      spans.add(
+        TextSpan(
+          text: word,
+          style: GoogleFonts.girassol(
+            fontSize: 20,
+            textStyle: TextStyle(
+              color: ColorsApp.letters,
+              fontWeight: isCorrect ? FontWeight.bold : FontWeight.normal,
+            ),
+          ),
+        ),
+      );
+
+      if (i < wordsPassed.length - 1) {
+        spans.add(
+          TextSpan(
+            text: ' - ',
+            style: GoogleFonts.girassol(
+              fontSize: 20,
+              textStyle: TextStyle(color: ColorsApp.letters),
+            ),
+          ),
+        );
+      }
+    }
+
+    return spans;
   }
 
   @override
@@ -132,7 +228,7 @@ class _GameScreenState extends State<GameScreen> {
                           BackgroundMusicPlayer.loadMusic2();
                           BackgroundMusicPlayer.playBackgroundMusic(2);
                           setState(() {
-                            _controller.nextWord(false);
+                            _controller.nextWord(true);
                           });
                         },
                         icon: Icons.check,
@@ -197,9 +293,31 @@ class _GameScreenState extends State<GameScreen> {
                 },
                 icon: _controller.isPaused ? Icons.play_arrow : Icons.pause,
                 padding: 0,
-              ))
+              )),
+          Visibility(
+            visible: timeIsUp == false,
+            child: Positioned.fill(
+              child: BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                child: Container(
+                    color: Colors.black.withOpacity(0.5),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Center(
+                        child: Text('$waitingTime',
+                            style: GoogleFonts.girassol(
+                                fontSize: 24,
+                                textStyle:
+                                    TextStyle(color: ColorsApp.letters))),
+                      ),
+                    )),
+              ),
+            ),
+          ),
         ],
       ),
     );
   }
 }
+
+/* */

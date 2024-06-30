@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:mimica/src/utils/music.dart';
 import 'package:mimica/src/utils/words.dart';
 
@@ -25,6 +24,11 @@ class GameController {
       : remainingTime = ValueNotifier<int>(initialTime) {
     words = _getWordsForCategory(categorys);
     currentWord = _getRandomWord();
+    delayedStartTimer();
+  }
+
+  Future<void> delayedStartTimer() async {
+    await Future.delayed(const Duration(seconds: 3));
     _startTimer();
   }
 
@@ -58,13 +62,16 @@ class GameController {
 
   void _startTimer() {
     _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      BackgroundMusicPlayer.playBackgroundMusic(3);
-      if (remainingTime.value > 0 && !isPaused) {
+      if (remainingTime.value <= 11 && remainingTime.value > 0 && !isPaused) {
         remainingTime.value--;
+
         _playTickSound();
+      } else if (remainingTime.value > 0 && !isPaused) {
+        remainingTime.value--;
       } else if (remainingTime.value == 0) {
         _timer.cancel();
-        BackgroundMusicPlayer.stopBackgroundMusic(3);
+        BackgroundMusicPlayer.loadMusic5();
+        _playWhistleSound();
         onTimeUp();
       }
     });
@@ -74,6 +81,14 @@ class GameController {
     try {
       BackgroundMusicPlayer.loadMusic3();
       BackgroundMusicPlayer.playBackgroundMusic(3);
+    } catch (e) {
+      print('Error playing sound: $e');
+    }
+  }
+
+  Future<void> _playWhistleSound() async {
+    try {
+      BackgroundMusicPlayer.playBackgroundMusic(5);
     } catch (e) {
       print('Error playing sound: $e');
     }
@@ -97,9 +112,5 @@ class GameController {
       wordsPassed.add(currentWord);
       currentWord = _getRandomWord();
     }
-  }
-
-  void dispose() {
-    _timer.cancel();
   }
 }
