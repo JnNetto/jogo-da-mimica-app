@@ -81,17 +81,15 @@ class GameController {
     try {
       BackgroundMusicPlayer.loadMusic3();
       BackgroundMusicPlayer.playBackgroundMusic(3);
-    } catch (e) {
-      print('Error playing sound: $e');
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   Future<void> _playWhistleSound() async {
     try {
       BackgroundMusicPlayer.playBackgroundMusic(5);
-    } catch (e) {
-      print('Error playing sound: $e');
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   void pauseTimer() {

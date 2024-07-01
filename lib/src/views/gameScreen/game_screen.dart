@@ -59,17 +59,15 @@ class _GameScreenState extends State<GameScreen> {
   Future<void> _playTickSound() async {
     try {
       BackgroundMusicPlayer.playBackgroundMusic(3);
-    } catch (e) {
-      print('Error playing sound: $e');
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   Future<void> _playWhistleSound() async {
     try {
       BackgroundMusicPlayer.playBackgroundMusic(4);
-    } catch (e) {
-      print('Error playing sound: $e');
-    }
+      // ignore: empty_catches
+    } catch (e) {}
   }
 
   void _showResults() {

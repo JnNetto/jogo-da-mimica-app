@@ -26,7 +26,6 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
     BackgroundMusicPlayer.initialize();
-    BackgroundMusicPlayer.loadMusic1();
   }
 
   @override
