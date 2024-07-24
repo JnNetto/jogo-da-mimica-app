@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../controllers/game_controller.dart';
-import '../../utils/colors.dart';
-import '../../utils/music.dart';
-import '../../widgets/button.dart';
-import '../../widgets/icon_button.dart';
+import '../../core/utils/colors.dart';
+import '../../core/utils/music.dart';
+import '../../core/widgets/button.dart';
+import '../../core/widgets/icon_button.dart';
 
 class GameScreen extends StatefulWidget {
   final List<String> category;

@@ -1,29 +1,17 @@
-import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-// Função que mostra o dialog de carregamento
 void showLoadingDialog(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: false,
     builder: (BuildContext context) {
-      return Dialog(
+      return const Dialog(
         backgroundColor: Colors.transparent,
-        child: Container(
-          padding: const EdgeInsets.all(16.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8.0),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: const [
-              CircularProgressIndicator(),
-              SizedBox(width: 16.0),
-              Text("Conectando..."),
-            ],
-          ),
+        child: Center(
+          child: CircularProgressIndicator(color: Colors.white),
         ),
       );
     },
@@ -32,6 +20,7 @@ void showLoadingDialog(BuildContext context) {
 
 class Authentication {
   static User? user;
+  static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   static SnackBar customSnackBar({required String content}) {
     return SnackBar(
@@ -46,7 +35,6 @@ class Authentication {
   static Future<User?> signInWithGoogle(BuildContext context) async {
     showLoadingDialog(context);
     FirebaseAuth auth = FirebaseAuth.instance;
-
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     final GoogleSignInAccount? googleSignInAccount =
@@ -66,6 +54,7 @@ class Authentication {
             await auth.signInWithCredential(credential);
 
         user = userCredential.user;
+        await _checkAndCreateUserCollection(user!);
       } on FirebaseAuthException catch (e) {
         if (e.code == 'account-exists-with-different-credential') {
           // ignore: use_build_context_synchronously
@@ -90,7 +79,7 @@ class Authentication {
           ),
         );
       } finally {
-        // Fecha o dialog de carregamento após o término do processo
+        // ignore: use_build_context_synchronously
         Navigator.of(context, rootNavigator: true).pop();
       }
     }
@@ -98,10 +87,25 @@ class Authentication {
     return user;
   }
 
+  static Future<void> _checkAndCreateUserCollection(User user) async {
+    final email = user.email!;
+    final uid = user.uid;
+
+    final userDoc = _firestore.collection(email).doc(uid);
+
+    final docSnapshot = await userDoc.get();
+
+    if (!docSnapshot.exists) {
+      await userDoc.set({
+        'customCategories': {},
+      });
+    }
+  }
+
   static Future<void> signOut({required BuildContext context}) async {
     try {
       await FirebaseAuth.instance.signOut();
-      user = null; // Limpa a variável user ao deslogar
+      user = null;
     } catch (e) {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
@@ -117,13 +121,12 @@ class Authentication {
   }
 }
 
-// Função que inicia o processo de login com Google e mostra o dialog
 Future<void> signInWithGoogleAndShowLoading(BuildContext context) async {
   showLoadingDialog(context);
   try {
     Authentication.user = await Authentication.signInWithGoogle(context);
   } finally {
-    // Fecha o dialog de carregamento após o término do processo
+    // ignore: use_build_context_synchronously
     Navigator.of(context, rootNavigator: true).pop();
   }
 }

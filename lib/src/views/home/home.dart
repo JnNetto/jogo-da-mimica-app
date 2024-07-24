@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mimica_att/authentication.dart';
-import '../../utils/colors.dart';
-import '../../utils/music.dart';
-import '../../widgets/button.dart';
+import '../../core/utils/colors.dart';
+import '../../core/utils/music.dart';
+import '../../core/widgets/button.dart';
 import '../categorys/categorys.dart';
 import '../instructions/instructions.dart';
 import '../options/options.dart';

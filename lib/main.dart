@@ -2,8 +2,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'firebase_options.dart';
-import 'src/utils/music.dart';
-import 'src/utils/splash_screen.dart';
+import 'src/core/utils/music.dart';
+import 'src/core/utils/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
