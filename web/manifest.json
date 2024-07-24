@@ -1,6 +1,6 @@
 {
-    "name": "mimica",
-    "short_name": "mimica",
+    "name": "mimica_att",
+    "short_name": "mimica_att",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

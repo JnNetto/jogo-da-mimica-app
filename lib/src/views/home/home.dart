@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mimica/src/utils/music.dart';
-import 'package:mimica/src/widgets/button.dart';
+import 'package:mimica_att/authentication.dart';
 import '../../utils/colors.dart';
+import '../../utils/music.dart';
+import '../../widgets/button.dart';
 import '../categorys/categorys.dart';
 import '../instructions/instructions.dart';
 import '../options/options.dart';
@@ -17,9 +18,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      initialsign(context);
+    });
     BackgroundMusicPlayer.loadMusic1();
     BackgroundMusicPlayer.playBackgroundMusic(1);
     super.initState();
+  }
+
+  void initialsign(BuildContext context) async {
+    Authentication.user = await Authentication.signInWithGoogle(context);
   }
 
   @override

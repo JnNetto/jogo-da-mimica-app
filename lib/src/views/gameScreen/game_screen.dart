@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mimica/src/utils/music.dart';
-import 'package:mimica/src/widgets/button.dart';
-import 'package:mimica/src/utils/colors.dart';
-import 'package:mimica/src/widgets/icon_button.dart';
 import '../../controllers/game_controller.dart';
+import '../../utils/colors.dart';
+import '../../utils/music.dart';
+import '../../widgets/button.dart';
+import '../../widgets/icon_button.dart';
 
 class GameScreen extends StatefulWidget {
   final List<String> category;

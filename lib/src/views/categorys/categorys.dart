@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mimica/src/utils/music.dart';
-import 'package:mimica/src/widgets/button.dart';
-import 'package:mimica/src/widgets/icon_button.dart';
-
 import '../../utils/colors.dart';
+import '../../utils/music.dart';
+import '../../widgets/button.dart';
+import '../../widgets/icon_button.dart';
 import '../gameScreen/game_screen.dart';
 
 class Category extends StatefulWidget {

@@ -1,7 +1,8 @@
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:mimica/src/views/home/home.dart';
+
+import '../views/home/home.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});

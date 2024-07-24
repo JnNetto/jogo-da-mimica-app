@@ -90,12 +90,12 @@ BEGIN
         BLOCK "040904e4"
         BEGIN
             VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "mimica" "\0"
+            VALUE "FileDescription", "mimica_att" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "mimica" "\0"
+            VALUE "InternalName", "mimica_att" "\0"
             VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "mimica.exe" "\0"
-            VALUE "ProductName", "mimica" "\0"
+            VALUE "OriginalFilename", "mimica_att.exe" "\0"
+            VALUE "ProductName", "mimica_att" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

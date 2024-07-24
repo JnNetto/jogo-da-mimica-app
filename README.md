@@ -1,4 +1,4 @@
-# mimica
+# mimica_att
 
 A new Flutter project.
 

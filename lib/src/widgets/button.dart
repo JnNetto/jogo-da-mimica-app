@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mimica/src/utils/colors.dart';
+
+import '../utils/colors.dart';
 
 class Button extends StatefulWidget {
   final double? elevation;
@@ -24,14 +25,14 @@ class _ButtonState extends State<Button> {
   Widget build(BuildContext context) {
     return ElevatedButton(
         style: ButtonStyle(
-          backgroundColor: MaterialStateProperty.all(widget.buttonColor),
-          shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+          backgroundColor: WidgetStateProperty.all(widget.buttonColor),
+          shape: WidgetStateProperty.all<RoundedRectangleBorder>(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(1),
             ),
           ),
-          shadowColor: MaterialStateProperty.all(ColorsApp.color4),
-          elevation: MaterialStateProperty.all(widget.elevation),
+          shadowColor: WidgetStateProperty.all(ColorsApp.color4),
+          elevation: WidgetStateProperty.all(widget.elevation),
         ),
         onPressed: widget.onPressed,
         child: Padding(

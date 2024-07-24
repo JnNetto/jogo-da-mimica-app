@@ -1,4 +1,4 @@
-package com.example.mimica
+package com.example.mimica_att
 
 import io.flutter.embedding.android.FlutterActivity
 

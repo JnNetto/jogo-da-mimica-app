@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:mimica/src/utils/music.dart';
-import 'package:mimica/src/utils/words.dart';
+
+import '../utils/music.dart';
+import '../utils/words.dart';
 
 class GameController {
   final List<String> categorys;

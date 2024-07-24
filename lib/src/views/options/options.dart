@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:mimica/src/utils/colors.dart';
-
+import '../../../authentication.dart';
+import '../../utils/colors.dart';
 import '../../utils/music.dart';
+import '../../widgets/button.dart';
 
 class Options extends StatefulWidget {
   final BoxConstraints constraints;
@@ -26,17 +27,20 @@ class _OptionsState extends State<Options> {
       ),
       child: SizedBox(
         width: widget.constraints.maxWidth * 0.5,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            title(),
-            const SizedBox(
-              height: 10,
-            ),
-            musicSlider(),
-            soundsSlider(),
-            backButton()
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              title(),
+              const SizedBox(
+                height: 10,
+              ),
+              musicSlider(),
+              soundsSlider(),
+              signInButton(context),
+              backButton()
+            ],
+          ),
         ),
       ),
     );
@@ -109,6 +113,34 @@ class _OptionsState extends State<Options> {
           Navigator.of(context).pop();
         },
       ),
+    );
+  }
+
+  Widget signInButton(BuildContext context) {
+    return Column(
+      children: [
+        Text("Conectado como:",
+            style: GoogleFonts.girassol(
+                fontSize: 20, textStyle: TextStyle(color: ColorsApp.letters))),
+        const SizedBox(
+          height: 5,
+        ),
+        Button(
+          onPressed: () async {
+            if (Authentication.isUserSignedIn()) {
+              Authentication.signOut(context: context);
+              setState(() {});
+            } else {
+              Authentication.user =
+                  await Authentication.signInWithGoogle(context);
+              setState(() {});
+            }
+          },
+          elevation: 5,
+          buttonColor: ColorsApp.color1,
+          label: Authentication.user?.displayName ?? "Não conectado",
+        ),
+      ],
     );
   }
 }
