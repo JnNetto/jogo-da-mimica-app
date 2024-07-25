@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mimica_att/src/views/custom_categories/custom_categories.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/music.dart';
 import '../../core/widgets/button.dart';
@@ -19,7 +20,7 @@ class _CategoryState extends State<Category> {
   int timeInSeconds = 60;
   Map<String, double> buttonElevations = {};
   Map<String, Color> buttonColor = {};
-  List<String> categorys = [
+  List<String> categories = [
     "Geral",
     "Verbos",
     "Filmes",
@@ -31,7 +32,7 @@ class _CategoryState extends State<Category> {
   @override
   void initState() {
     super.initState();
-    for (var category in categorys) {
+    for (var category in categories) {
       buttonColor[category] = ColorsApp.color1;
       buttonElevations[category] = 10.0;
     }
@@ -49,7 +50,7 @@ class _CategoryState extends State<Category> {
     });
   }
 
-  void _selectedsCategorys(String category) {
+  void _selectedsCategories(String category) {
     setState(() {
       if (buttonElevations[category] == 0) {
         selectedCategory.add(category);
@@ -74,7 +75,7 @@ class _CategoryState extends State<Category> {
                   const SizedBox(
                     height: 10,
                   ),
-                  selectCategorys(categorys, buttonColor, buttonElevations),
+                  selectCategories(categories, buttonColor, buttonElevations),
                   const SizedBox(height: 20),
                   inputTime(),
                   const SizedBox(height: 20),
@@ -96,14 +97,14 @@ class _CategoryState extends State<Category> {
             fontSize: 30, textStyle: TextStyle(color: ColorsApp.letters)));
   }
 
-  Widget selectCategorys(List<String> categorys, Map<String, Color> buttonColor,
-      Map<String, double> buttonElevations) {
+  Widget selectCategories(List<String> categories,
+      Map<String, Color> buttonColor, Map<String, double> buttonElevations) {
     return Center(
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: categorys.map((category) {
+          children: categories.map((category) {
             return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Button(
@@ -113,7 +114,7 @@ class _CategoryState extends State<Category> {
                       BackgroundMusicPlayer.loadMusic2();
                       BackgroundMusicPlayer.playBackgroundMusic(2);
                       _toggleElevation(category);
-                      _selectedsCategorys(category);
+                      _selectedsCategories(category);
                     },
                     label: category));
           }).toList(),
@@ -191,7 +192,7 @@ class _CategoryState extends State<Category> {
             BackgroundMusicPlayer.playBackgroundMusic(2);
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => const Category()),
+              MaterialPageRoute(builder: (context) => const CustomCategories()),
             );
           },
           label: "Personalizado"),

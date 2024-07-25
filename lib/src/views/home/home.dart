@@ -4,7 +4,7 @@ import 'package:mimica_att/authentication.dart';
 import '../../core/utils/colors.dart';
 import '../../core/utils/music.dart';
 import '../../core/widgets/button.dart';
-import '../categorys/categorys.dart';
+import '../categories/categories.dart';
 import '../instructions/instructions.dart';
 import '../options/options.dart';
 
