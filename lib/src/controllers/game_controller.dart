@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-
 import '../core/utils/music.dart';
 import '../core/utils/words.dart';
 
@@ -8,6 +7,7 @@ class GameController {
   final List<String> categorys;
   final int initialTime;
   final ValueNotifier<int> remainingTime;
+  final Map<String, List<String>> customCategories;
   int score = 0;
   String currentWord = '';
   List<String> words = [];
@@ -21,7 +21,8 @@ class GameController {
   GameController(
       {required this.categorys,
       required this.initialTime,
-      required this.onTimeUp})
+      required this.onTimeUp,
+      required this.customCategories})
       : remainingTime = ValueNotifier<int>(initialTime) {
     words = _getWordsForCategory(categorys);
     currentWord = _getRandomWord();
@@ -36,21 +37,33 @@ class GameController {
   List<String> _getWordsForCategory(List<String> categorys) {
     List<String> words = [];
     for (String category in categorys) {
-      switch (category) {
-        case 'Geral':
-          words.addAll(ListWords.geral);
-        case 'Verbos':
-          words.addAll(ListWords.verbos);
-        case 'Filmes':
-          words.addAll(ListWords.filmes);
-        case 'Animais':
-          words.addAll(ListWords.animais);
-        case 'Objetos':
-          words.addAll(ListWords.objetos);
-        case 'Profissões':
-          words.addAll(ListWords.profissoes);
-        default:
-          words.addAll([]);
+      if (customCategories == {}) {
+        switch (category) {
+          case 'Geral':
+            words.addAll(ListWords.geral);
+            break;
+          case 'Verbos':
+            words.addAll(ListWords.verbos);
+            break;
+          case 'Filmes':
+            words.addAll(ListWords.filmes);
+            break;
+          case 'Animais':
+            words.addAll(ListWords.animais);
+            break;
+          case 'Objetos':
+            words.addAll(ListWords.objetos);
+            break;
+          case 'Profissões':
+            words.addAll(ListWords.profissoes);
+            break;
+          default:
+            words.addAll([]);
+        }
+      } else {
+        if (customCategories[category] != null) {
+          words.addAll(customCategories[category] ?? []);
+        }
       }
     }
     return words;

@@ -11,9 +11,13 @@ import '../../core/widgets/icon_button.dart';
 class GameScreen extends StatefulWidget {
   final List<String> category;
   final int timeInSeconds;
+  final Map<String, List<String>> customCategories;
 
   const GameScreen(
-      {super.key, required this.category, required this.timeInSeconds});
+      {super.key,
+      required this.category,
+      required this.timeInSeconds,
+      required this.customCategories});
 
   @override
   // ignore: library_private_types_in_public_api
@@ -34,6 +38,7 @@ class _GameScreenState extends State<GameScreen> {
       categorys: widget.category,
       initialTime: widget.timeInSeconds,
       onTimeUp: _showResults,
+      customCategories: widget.customCategories,
     );
   }
 

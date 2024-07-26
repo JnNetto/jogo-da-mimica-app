@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mimica_att/src/database/lists_database.dart';
+import 'package:mimica_att/src/views/custom_categories_details/custom_categories_details.dart';
 import '../../../authentication.dart';
 import '../../controllers/words_controller.dart';
 import '../../core/utils/colors.dart';
@@ -12,7 +15,6 @@ class CustomCategories extends StatefulWidget {
   const CustomCategories({super.key});
 
   @override
-  // ignore: library_private_types_in_public_api
   _CustomCategoriesState createState() => _CustomCategoriesState();
 }
 
@@ -23,11 +25,17 @@ class _CustomCategoriesState extends State<CustomCategories> {
   Map<String, Color> buttonColor = {};
   List<String> categorys = [];
   final WordsController _wordsController = WordsController();
+  final ListsDatabase listsDatabase = ListsDatabase();
 
   @override
   void initState() {
     super.initState();
+    _initializeDatabase();
     _loadCategories();
+  }
+
+  Future<void> _initializeDatabase() async {
+    await listsDatabase.initHive();
   }
 
   Future<void> _loadCategories() async {
@@ -55,48 +63,81 @@ class _CustomCategoriesState extends State<CustomCategories> {
     await showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Adicionar Nova Lista'),
-          content: TextField(
-            controller: textFieldController,
-            decoration:
-                const InputDecoration(hintText: "Digite o nome da nova lista"),
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: const Text('Cancelar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: const Text('Adicionar'),
-              onPressed: () {
-                newCategory = textFieldController.text.trim();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+        return KeyboardVisibilityBuilder(
+          builder: (context, isKeyboardVisible) {
+            return AlertDialog(
+              title: !isKeyboardVisible
+                  ? Text(
+                      'Adicionar Nova Lista',
+                      style: TextStyle(color: ColorsApp.letters),
+                    )
+                  : null,
+              backgroundColor: ColorsApp.color1,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    TextField(
+                      controller: textFieldController,
+                      style: TextStyle(color: ColorsApp.letters),
+                      decoration: InputDecoration(
+                        hintText: "Digite o nome da nova lista",
+                        hintStyle: TextStyle(color: ColorsApp.color4),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              actions: !isKeyboardVisible
+                  ? <Widget>[
+                      TextButton(
+                        child: Text(
+                          'Cancelar',
+                          style: TextStyle(color: ColorsApp.letters),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      TextButton(
+                        child: Text(
+                          'Adicionar',
+                          style: TextStyle(color: ColorsApp.letters),
+                        ),
+                        onPressed: () async {
+                          newCategory = textFieldController.text.trim();
+                          if (newCategory.isNotEmpty &&
+                              !categorys.contains(newCategory)) {
+                            await _wordsController.addCategory(
+                                userEmail, userId, newCategory);
+                            setState(() {
+                              categorys.add(newCategory);
+                              buttonColor[newCategory] = ColorsApp.color1;
+                              buttonElevations[newCategory] = 10.0;
+                            });
+                          } else {
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Nome inválido ou já existente."),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          }
+                          // ignore: use_build_context_synchronously
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ]
+                  : [],
+            );
+          },
         );
       },
     );
-
-    if (newCategory.isNotEmpty && !categorys.contains(newCategory)) {
-      await _wordsController.addCategory(userEmail, userId, newCategory);
-      setState(() {
-        categorys.add(newCategory);
-        buttonColor[newCategory] = ColorsApp.color1;
-        buttonElevations[newCategory] = 10.0;
-      });
-    } else {
-      // ignore: use_build_context_synchronously
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Nome inválido ou já existente."),
-          duration: Duration(seconds: 2),
-        ),
-      );
-    }
   }
 
   void _toggleElevation(String category) {
@@ -129,8 +170,11 @@ class _CustomCategoriesState extends State<CustomCategories> {
         child: Center(
           child: Stack(
             children: [
+              addCustomCategories(),
+              backButton(),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.max,
                 children: [
                   title(),
                   const SizedBox(
@@ -143,8 +187,6 @@ class _CustomCategoriesState extends State<CustomCategories> {
                   buttonToStart(selectedCategory, timeInSeconds)
                 ],
               ),
-              addCustomCategories(),
-              backButton()
             ],
           ),
         ),
@@ -184,7 +226,14 @@ class _CustomCategoriesState extends State<CustomCategories> {
                     top: 0,
                     right: 0,
                     child: GestureDetector(
-                      onTap: () {},
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  CategoryDetailScreen(categoryName: category)),
+                        );
+                      },
                       child: Container(
                           width: 30,
                           height: 30,
@@ -228,17 +277,21 @@ class _CustomCategoriesState extends State<CustomCategories> {
     return Button(
         elevation: 10,
         buttonColor: ColorsApp.color1,
-        onPressed: () {
-          if (selectedCategory != []) {
+        onPressed: () async {
+          if (selectedCategory.isNotEmpty) {
             BackgroundMusicPlayer.stopBackgroundMusic(1);
             BackgroundMusicPlayer.loadMusic2();
             BackgroundMusicPlayer.playBackgroundMusic(2);
+            Map<String, List<String>> customCategories =
+                await _wordsController.preloadCategories();
             Navigator.push(
+              // ignore: use_build_context_synchronously
               context,
               MaterialPageRoute(
                 builder: (context) => GameScreen(
                   category: selectedCategory,
                   timeInSeconds: timeInSeconds,
+                  customCategories: customCategories,
                 ),
               ),
             );

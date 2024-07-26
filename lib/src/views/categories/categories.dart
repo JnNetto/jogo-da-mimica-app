@@ -156,6 +156,7 @@ class _CategoryState extends State<Category> {
                 builder: (context) => GameScreen(
                   category: selectedCategory,
                   timeInSeconds: timeInSeconds,
+                  customCategories: const {},
                 ),
               ),
             );
