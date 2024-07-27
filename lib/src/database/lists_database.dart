@@ -3,8 +3,14 @@ import 'package:hive_flutter/hive_flutter.dart';
 class ListsDatabase {
   Box? categoriesBox;
 
-  Future<void> initHive() async {
+  Future<void> initHive(
+      {Map<String, dynamic> customCategories = const {}}) async {
     categoriesBox = await Hive.openBox('categories');
+    if (customCategories.isNotEmpty) {
+      customCategories.forEach((key, value) {
+        categoriesBox!.put(key, value);
+      });
+    }
   }
 
   // Adiciona uma nova categoria
@@ -13,6 +19,15 @@ class ListsDatabase {
 
     if (!categoriesBox!.containsKey(category)) {
       categoriesBox!.put(category, <String>[]);
+    }
+  }
+
+  Future<void> deleteCategory(String category) async {
+    if (categoriesBox == null) await initHive();
+
+    if (categoriesBox!.containsKey(category)) {
+      categoriesBox!.put(category, <String>[]);
+      categoriesBox!.delete(category);
     }
   }
 
@@ -30,7 +45,7 @@ class ListsDatabase {
       list = List<String>.from(list);
       return list as List<String>;
     }
-    return null;
+    return [];
   }
 
   // Adiciona um item a uma categoria específica

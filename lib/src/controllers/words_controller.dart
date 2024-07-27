@@ -1,48 +1,139 @@
+// ignore_for_file: use_build_context_synchronously
 import 'dart:io';
-
+import 'package:flutter/material.dart';
+import 'package:mimica_att/src/core/exceptions/failure.dart';
+import '../../authentication.dart';
 import '../database/lists_database.dart';
 import '../repositories/words_repository.dart';
+
+void showLoadingDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return const Dialog(
+        backgroundColor: Colors.transparent,
+        child: Center(
+          child: CircularProgressIndicator(color: Colors.white),
+        ),
+      );
+    },
+  );
+}
 
 class WordsController {
   final WordsRepository _wordsRepository = WordsRepository();
   final ListsDatabase _listsDatabase = ListsDatabase();
+  String userEmail = Authentication.user?.email ?? "";
+  String userId = Authentication.user?.uid ?? "";
 
-  Future<List<String>> getTitleCategories(
-      String userEmail, String userId) async {
-    // // ignore: no_leading_underscores_for_local_identifiers
-    // bool _hasNetwork = await hasNetwork();
-    // if (_hasNetwork) {
-    //   Map<String, dynamic>? categoriesData =
-    //       await _wordsRepository.fetchCustomCategories(userEmail, userId);
-
-    //   if (categoriesData != null) {
-    //     return categoriesData.keys.toList();
-    //   } else {
-    //     return [];
-    //   }
-    // } else {
-    List<String> allCategories = await _listsDatabase.getAllCategoryKeys();
-    return allCategories;
-    // }
-  }
-
-  final Map<String, List<String>> _categoryCache = {};
-
-  Future<Map<String, List<String>>> preloadCategories() async {
-    List<String> allCategoriesKeys = await _listsDatabase.getAllCategoryKeys();
-    for (String key in allCategoriesKeys) {
-      _categoryCache[key] = await _listsDatabase.getCategoryList(key) ?? [];
+  Future<List<String>> getTitleCategories(BuildContext context) async {
+    showLoadingDialog(context);
+    try {
+      List<String> allCategories = await _listsDatabase.getAllCategoryKeys();
+      return allCategories;
+    } on Exception catch (e) {
+      Failure.showErrorDialog(context, e);
+      return [];
+    } finally {
+      Navigator.of(context, rootNavigator: true).pop();
     }
-    return _categoryCache;
   }
 
-  Future<void> addCategory(
-      String userEmail, String userId, String categoryName) async {
-    await _listsDatabase.addCategory(categoryName);
-    // ignore: no_leading_underscores_for_local_identifiers
-    bool _hasNetwork = await hasNetwork();
-    if (_hasNetwork) {
-      await _wordsRepository.addCustomCategory(userEmail, userId, categoryName);
+  Future<Map<String, List<String>>> preloadCategories(
+      BuildContext context, bool isItToSave) async {
+    showLoadingDialog(context);
+    try {
+      await hasNetwork();
+      final Map<String, List<String>> allDataCategories = {};
+      List<String> allCategoriesKeys =
+          await _listsDatabase.getAllCategoryKeys();
+      for (String key in allCategoriesKeys) {
+        allDataCategories[key] =
+            await _listsDatabase.getCategoryList(key) ?? [];
+      }
+      if (await hasNetwork() && isItToSave && userEmail != "") {
+        await _wordsRepository.saveCategories(allDataCategories);
+      }
+      return allDataCategories;
+    } on Exception catch (e) {
+      Failure.showErrorDialog(context, e);
+      return {};
+    } finally {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
+  Future<void> addCategory(String categoryName, BuildContext context) async {
+    showLoadingDialog(context);
+    try {
+      await hasNetwork();
+      await _listsDatabase.addCategory(categoryName);
+      // ignore: no_leading_underscores_for_local_identifiers
+      bool _hasNetwork = await hasNetwork();
+      if (_hasNetwork && userEmail != "") {
+        await _wordsRepository.addCustomCategory(categoryName);
+      }
+    } on Exception catch (e) {
+      Failure.showErrorDialog(context, e);
+    } finally {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
+  Future<void> deleteCategory(String categoryName, BuildContext context) async {
+    showLoadingDialog(context);
+    try {
+      await hasNetwork();
+      await _listsDatabase.deleteCategory(categoryName);
+      if (await hasNetwork() && userEmail != "") {
+        await _wordsRepository.deleteCustomCategory(categoryName);
+      }
+    } on Exception catch (e) {
+      Failure.showErrorDialog(context, e);
+    } finally {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
+  Future<void> addItemToCategory(
+      String categoryName, String newWord, BuildContext context) async {
+    showLoadingDialog(context);
+    try {
+      await hasNetwork();
+      await _listsDatabase.addItemToCategory(categoryName, newWord);
+    } on Exception catch (e) {
+      Failure.showErrorDialog(context, e);
+    } finally {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
+  Future<void> deleteItemToCategory(
+      String categoryName, String word, BuildContext context) async {
+    showLoadingDialog(context);
+    try {
+      await hasNetwork();
+      await _listsDatabase.deleteItemToCategory(categoryName, word);
+    } on Exception catch (e) {
+      Failure.showErrorDialog(context, e);
+    } finally {
+      Navigator.of(context, rootNavigator: true).pop();
+    }
+  }
+
+  Future<List<String>?> getCategoryList(
+      String categoryName, BuildContext context) async {
+    showLoadingDialog(context);
+    try {
+      await hasNetwork();
+      List<String>? words = await _listsDatabase.getCategoryList(categoryName);
+      return words;
+    } on Exception catch (e) {
+      Failure.showErrorDialog(context, e);
+      return [];
+    } finally {
+      Navigator.of(context, rootNavigator: true).pop();
     }
   }
 

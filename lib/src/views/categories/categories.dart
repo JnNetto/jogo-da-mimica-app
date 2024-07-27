@@ -183,8 +183,8 @@ class _CategoryState extends State<Category> {
 
   Widget customCategories() {
     return Positioned(
-      top: 10,
-      right: 10,
+      bottom: 20,
+      right: 20,
       child: Button(
           elevation: 5,
           buttonColor: ColorsApp.color1,

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:mimica_att/src/database/lists_database.dart';
 
 void showLoadingDialog(BuildContext context) {
   showDialog(
@@ -21,6 +22,7 @@ void showLoadingDialog(BuildContext context) {
 class Authentication {
   static User? user;
   static final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  static final ListsDatabase _listsDatabase = ListsDatabase();
 
   static SnackBar customSnackBar({required String content}) {
     return SnackBar(
@@ -36,13 +38,9 @@ class Authentication {
     showLoadingDialog(context);
     FirebaseAuth auth = FirebaseAuth.instance;
     final GoogleSignIn googleSignIn = GoogleSignIn();
-
-//PlatformException(network_error
     try {
       final GoogleSignInAccount? googleSignInAccount =
           await googleSignIn.signIn();
-
-      // if () {
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
             await googleSignInAccount.authentication;
@@ -66,14 +64,15 @@ class Authentication {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           Authentication.customSnackBar(
-            content: 'The account already exists with a different credential',
+            content: 'A conta já existe com credenciais diferentes',
           ),
         );
       } else if (e.code == 'invalid-credential') {
         // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           Authentication.customSnackBar(
-            content: 'Error occurred while accessing credentials. Try again.',
+            content:
+                'Um erro ocorreu ao acessar as credenciais. Tente novamente.',
           ),
         );
       }
@@ -81,7 +80,7 @@ class Authentication {
       // ignore: use_build_context_synchronously
       ScaffoldMessenger.of(context).showSnackBar(
         Authentication.customSnackBar(
-          content: 'Error occurred using Google Sign In. Try again.',
+          content: 'Erro. Tente novamente.',
         ),
       );
     } finally {
@@ -104,6 +103,15 @@ class Authentication {
       await userDoc.set({
         'customCategories': {},
       });
+    } else {
+      final data = docSnapshot.data();
+
+      if (data != null && data.containsKey('customCategories')) {
+        final customCategories =
+            Map<String, dynamic>.from(data['customCategories']);
+        await _listsDatabase.initHive(customCategories: customCategories);
+        print("CARREGADO COM SUCESSO");
+      }
     }
   }
 
@@ -123,15 +131,5 @@ class Authentication {
 
   static bool isUserSignedIn() {
     return user != null;
-  }
-}
-
-Future<void> signInWithGoogleAndShowLoading(BuildContext context) async {
-  showLoadingDialog(context);
-  try {
-    Authentication.user = await Authentication.signInWithGoogle(context);
-  } finally {
-    // ignore: use_build_context_synchronously
-    Navigator.of(context, rootNavigator: true).pop();
   }
 }

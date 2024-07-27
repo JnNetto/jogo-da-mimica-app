@@ -36,8 +36,9 @@ class GameController {
 
   List<String> _getWordsForCategory(List<String> categorys) {
     List<String> words = [];
+    print(customCategories);
     for (String category in categorys) {
-      if (customCategories == {}) {
+      if (customCategories.isEmpty) {
         switch (category) {
           case 'Geral':
             words.addAll(ListWords.geral);

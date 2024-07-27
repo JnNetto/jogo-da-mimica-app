@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mimica_att/authentication.dart';
@@ -27,7 +29,19 @@ class _HomeState extends State<Home> {
   }
 
   void initialsign(BuildContext context) async {
-    Authentication.user = await Authentication.signInWithGoogle(context);
+    if (await hasNetwork()) {
+      // ignore: use_build_context_synchronously
+      Authentication.user = await Authentication.signInWithGoogle(context);
+    }
+  }
+
+  Future<bool> hasNetwork() async {
+    try {
+      final result = await InternetAddress.lookup('example.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } on SocketException catch (_) {
+      return false;
+    }
   }
 
   @override
@@ -127,7 +141,7 @@ class _HomeState extends State<Home> {
     return Positioned(
         bottom: 10,
         right: 10,
-        child: Text("Versão: 1.0",
+        child: Text("Versão: 2.0",
             style: GoogleFonts.girassol(
                 fontSize: 20, textStyle: TextStyle(color: ColorsApp.letters))));
   }
