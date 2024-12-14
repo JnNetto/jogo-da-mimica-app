@@ -110,7 +110,6 @@ class Authentication {
         final customCategories =
             Map<String, dynamic>.from(data['customCategories']);
         await _listsDatabase.initHive(customCategories: customCategories);
-        print("CARREGADO COM SUCESSO");
       }
     }
   }

@@ -44,6 +44,7 @@ class _CustomCategoriesState extends State<CustomCategories> {
   Future<void> _loadCategories() async {
     customCategories = await _wordsController.preloadCategories(context, true);
     List<String> newCategories =
+        // ignore: use_build_context_synchronously
         await _wordsController.getTitleCategories(context);
     setState(() {
       categories = newCategories;
@@ -92,6 +93,8 @@ class _CustomCategoriesState extends State<CustomCategories> {
                   style: TextStyle(color: ColorsApp.letters),
                 ),
                 onPressed: () {
+                  BackgroundMusicPlayer.loadMusic2();
+                  BackgroundMusicPlayer.playBackgroundMusic(2);
                   Navigator.of(context).pop();
                 },
               ),
@@ -101,6 +104,8 @@ class _CustomCategoriesState extends State<CustomCategories> {
                   style: TextStyle(color: ColorsApp.letters),
                 ),
                 onPressed: () async {
+                  BackgroundMusicPlayer.loadMusic2();
+                  BackgroundMusicPlayer.playBackgroundMusic(2);
                   newCategory = textFieldController.text.trim();
                   if (newCategory.isNotEmpty &&
                       !categories.contains(newCategory)) {
@@ -240,6 +245,8 @@ class _CustomCategoriesState extends State<CustomCategories> {
                       right: 0,
                       child: GestureDetector(
                         onTap: () {
+                          BackgroundMusicPlayer.loadMusic2();
+                          BackgroundMusicPlayer.playBackgroundMusic(2);
                           _navigateToCategoryDetail(category);
                         },
                         child: Container(

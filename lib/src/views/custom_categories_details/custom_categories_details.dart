@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mimica_att/src/controllers/words_controller.dart';
@@ -95,6 +98,8 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                               padding: const EdgeInsets.only(top: 20.0),
                               child: GestureDetector(
                                 onTap: () {
+                                  BackgroundMusicPlayer.loadMusic2();
+                                  BackgroundMusicPlayer.playBackgroundMusic(2);
                                   _addWord();
                                 },
                                 child: Container(
@@ -136,10 +141,14 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                                             textStyle: TextStyle(
                                                 color: ColorsApp.letters))),
                                     trailing: IconButton(
-                                      icon: const Icon(Icons.delete,
-                                          color: Colors.red),
-                                      onPressed: () => _deleteWord(word),
-                                    ),
+                                        icon: const Icon(Icons.delete,
+                                            color: Colors.red),
+                                        onPressed: () {
+                                          BackgroundMusicPlayer.loadMusic2();
+                                          BackgroundMusicPlayer
+                                              .playBackgroundMusic(2);
+                                          _deleteWord(word);
+                                        }),
                                   ),
                                 );
                               },
@@ -153,7 +162,8 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
               ],
             ),
             backButton(),
-            deleteButton()
+            deleteButton(),
+            addButton()
           ],
         ),
       ),
@@ -171,6 +181,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
               BackgroundMusicPlayer.loadMusic2();
               BackgroundMusicPlayer.playBackgroundMusic(2);
               await wordsController.preloadCategories(context, true);
+              // ignore: use_build_context_synchronously
               Navigator.pop(context);
             },
             icon: Icons.arrow_back,
@@ -185,6 +196,8 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
         elevation: 5,
         buttonColor: ColorsApp.color1,
         onPressed: () async {
+          BackgroundMusicPlayer.loadMusic2();
+          BackgroundMusicPlayer.playBackgroundMusic(2);
           bool? confirmDelete = await showDialog<bool>(
             context: context,
             builder: (BuildContext context) {
@@ -205,6 +218,8 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                             fontSize: 15,
                             textStyle: TextStyle(color: ColorsApp.letters))),
                     onPressed: () {
+                      BackgroundMusicPlayer.loadMusic2();
+                      BackgroundMusicPlayer.playBackgroundMusic(2);
                       Navigator.of(context).pop(false);
                     },
                   ),
@@ -214,6 +229,8 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                             fontSize: 15,
                             textStyle: TextStyle(color: ColorsApp.letters))),
                     onPressed: () {
+                      BackgroundMusicPlayer.loadMusic2();
+                      BackgroundMusicPlayer.playBackgroundMusic(2);
                       Navigator.of(context).pop(true);
                     },
                   ),
@@ -235,5 +252,101 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
         padding: 0,
       ),
     );
+  }
+
+  Widget addButton() {
+    return Positioned(
+      bottom: 10,
+      left: 70,
+      child: CustomIconButton(
+        elevation: 5,
+        buttonColor: ColorsApp.color1,
+        onPressed: () async {
+          BackgroundMusicPlayer.loadMusic2();
+          BackgroundMusicPlayer.playBackgroundMusic(2);
+          await showDialog<bool>(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                backgroundColor: ColorsApp.color1,
+                title: Text('Importar arquivo',
+                    style: GoogleFonts.girassol(
+                        fontSize: 20,
+                        textStyle: TextStyle(color: ColorsApp.letters))),
+                content: Text(
+                    'Selecione um arquivo com as palavras separadas por vírgulas (de preferência um arquivo .txt)',
+                    style: GoogleFonts.girassol(
+                        fontSize: 18,
+                        textStyle: TextStyle(color: ColorsApp.letters))),
+                actions: [
+                  TextButton(
+                    child: Text('Cancelar',
+                        style: GoogleFonts.girassol(
+                            fontSize: 15,
+                            textStyle: TextStyle(color: ColorsApp.letters))),
+                    onPressed: () {
+                      BackgroundMusicPlayer.loadMusic2();
+                      BackgroundMusicPlayer.playBackgroundMusic(2);
+                      Navigator.of(context).pop();
+                    },
+                  ),
+                  TextButton(
+                    child: Text('Importar',
+                        style: GoogleFonts.girassol(
+                            fontSize: 15,
+                            textStyle: TextStyle(color: ColorsApp.letters))),
+                    onPressed: () {
+                      BackgroundMusicPlayer.loadMusic2();
+                      BackgroundMusicPlayer.playBackgroundMusic(2);
+                      Navigator.of(context).pop();
+                      pickAndReadFile();
+                    },
+                  ),
+                ],
+              );
+            },
+          );
+        },
+        icon: Icons.import_export,
+        padding: 0,
+      ),
+    );
+  }
+
+  String? fileContent;
+  List<String>? words;
+
+  Future<void> pickAndReadFile() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['txt'],
+      );
+      if (result != null && result.files.single.path != null) {
+        File file = File(result.files.single.path!);
+
+        // Lê o conteúdo do arquivo
+        String content = await file.readAsString();
+
+        // Processa as palavras separadas por vírgulas
+        List<String> parsedWords = content.split(',');
+
+        setState(() {
+          fileContent = content;
+          words = parsedWords.map((word) => word.trim()).toList();
+        });
+
+        for (var i in words!) {
+          _textEditingController.text = i;
+          _addWord();
+          _textEditingController.clear();
+        }
+        _loadCategoryWords();
+      }
+    } catch (e) {
+      setState(() {
+        fileContent = 'Erro ao ler o arquivo: $e';
+      });
+    }
   }
 }

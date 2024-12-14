@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:mimica_att/src/core/utils/colors.dart';
 
+import '../utils/music.dart';
+
 class Failure implements Exception {
   final String? message;
 
@@ -33,6 +35,8 @@ class Failure implements Exception {
           actions: <Widget>[
             TextButton(
               onPressed: () {
+                BackgroundMusicPlayer.loadMusic2();
+                BackgroundMusicPlayer.playBackgroundMusic(2);
                 Navigator.of(context).pop();
               },
               child: const Text('OK'),

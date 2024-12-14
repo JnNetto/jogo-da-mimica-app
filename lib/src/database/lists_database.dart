@@ -52,7 +52,7 @@ class ListsDatabase {
   Future<void> addItemToCategory(String category, String item) async {
     if (categoriesBox == null) await initHive();
     final dynamic list = categoriesBox!.get(category);
-    if (list is List<String>) {
+    if (list is List) {
       if (!list.contains(item)) {
         list.add(item);
         categoriesBox!.put(category, list);
@@ -64,7 +64,7 @@ class ListsDatabase {
   Future<void> deleteItemToCategory(String category, String item) async {
     if (categoriesBox == null) await initHive();
     final dynamic list = categoriesBox!.get(category);
-    if (list is List<String>) {
+    if (list is List) {
       list.remove(item);
       categoriesBox!.put(category, list);
     }

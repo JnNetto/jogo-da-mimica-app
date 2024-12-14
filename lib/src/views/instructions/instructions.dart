@@ -17,6 +17,8 @@ class Instructions extends StatefulWidget {
 class _InstructionsState extends State<Instructions> {
   @override
   Widget build(BuildContext context) {
+    List<String> categories = ["Personagens"];
+    List<String> words = ["Superman", "Batman", "Mulher maravilha"];
     return Scaffold(
         body: Container(
       color: ColorsApp.background,
@@ -122,7 +124,260 @@ class _InstructionsState extends State<Instructions> {
                             inputTime(),
                             const SizedBox(height: 10),
                             Text(
-                                "1.3 - Após configurar a partida de acordo com sua preferência, clique no botão 'Iniciar jogo' para começar",
+                                "1.3 - Caso não esteja interessado nas categorias padrão, você pode criar suas próprias categorias! Clique no botão 'Personalizado' para criar ou selecionar categorias personalizadas",
+                                style: GoogleFonts.girassol(
+                                    fontSize: 20,
+                                    textStyle:
+                                        TextStyle(color: ColorsApp.letters))),
+                            const SizedBox(height: 10),
+                            Center(
+                              child: Button(
+                                  elevation: 5,
+                                  buttonColor: ColorsApp.color1,
+                                  onPressed: () {
+                                    BackgroundMusicPlayer.loadMusic2();
+                                    BackgroundMusicPlayer.playBackgroundMusic(
+                                        2);
+                                  },
+                                  label: "Personalizado"),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                                "1.4 - Ao clica-lo, você verá suas opções personalizadas já criadas ou, caso você nunca tenha criado nenhuma, você pode criar clicando no botaão 'Adicionar listas'",
+                                style: GoogleFonts.girassol(
+                                    fontSize: 20,
+                                    textStyle:
+                                        TextStyle(color: ColorsApp.letters))),
+                            const SizedBox(height: 10),
+                            Center(
+                              child: Button(
+                                  elevation: 5,
+                                  buttonColor: ColorsApp.color1,
+                                  onPressed: () {
+                                    BackgroundMusicPlayer.loadMusic2();
+                                    BackgroundMusicPlayer.playBackgroundMusic(
+                                        2);
+                                  },
+                                  label: "Adicionar listas"),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                                "1.5 - Quando digitado o nome da nova lista, você pode editá-la no botão de edicção no canto direito superior do botão da determinada categoria",
+                                style: GoogleFonts.girassol(
+                                    fontSize: 20,
+                                    textStyle:
+                                        TextStyle(color: ColorsApp.letters))),
+                            const SizedBox(height: 10),
+                            Center(
+                              child: SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: categories.map((category) {
+                                      return Stack(
+                                        children: [
+                                          Padding(
+                                              padding:
+                                                  const EdgeInsets.all(15.0),
+                                              child: Button(
+                                                  elevation: 10,
+                                                  buttonColor: ColorsApp.color1,
+                                                  onPressed: () {
+                                                    BackgroundMusicPlayer
+                                                        .loadMusic2();
+                                                    BackgroundMusicPlayer
+                                                        .playBackgroundMusic(2);
+                                                  },
+                                                  label: category)),
+                                          Positioned(
+                                              top: 0,
+                                              right: 0,
+                                              child: GestureDetector(
+                                                onTap: () {
+                                                  BackgroundMusicPlayer
+                                                      .loadMusic2();
+                                                  BackgroundMusicPlayer
+                                                      .playBackgroundMusic(2);
+                                                },
+                                                child: Container(
+                                                    width: 30,
+                                                    height: 30,
+                                                    decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(20),
+                                                        color:
+                                                            ColorsApp.color2),
+                                                    child: const Center(
+                                                        child: Icon(
+                                                      Icons.edit,
+                                                      size: 20,
+                                                      color: Colors.white,
+                                                    ))),
+                                              ))
+                                        ],
+                                      );
+                                    }).toList()),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                                "1.6 - Ao clicar em editar, você verá todos os itens que já existem na lista, podendo apaga-los ou adicionar mais (caso tenha acabado de criar, ela vai vir vazia)",
+                                style: GoogleFonts.girassol(
+                                    fontSize: 20,
+                                    textStyle:
+                                        TextStyle(color: ColorsApp.letters))),
+                            const SizedBox(height: 20),
+                            Container(
+                              color: ColorsApp.background,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 1,
+                                    child: Column(
+                                      children: [
+                                        const Padding(
+                                          padding: EdgeInsets.only(
+                                              right: 40, top: 40, left: 40),
+                                          child: TextField(
+                                            style:
+                                                TextStyle(color: Colors.white),
+                                            decoration: InputDecoration(
+                                              labelText: 'Adicionar palavra',
+                                            ),
+                                          ),
+                                        ),
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(top: 20.0),
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              BackgroundMusicPlayer
+                                                  .loadMusic2();
+                                              BackgroundMusicPlayer
+                                                  .playBackgroundMusic(2);
+                                            },
+                                            child: Container(
+                                                width: 50,
+                                                height: 50,
+                                                decoration: BoxDecoration(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            8),
+                                                    color: ColorsApp.color2),
+                                                child: const Center(
+                                                    child: Icon(
+                                                  Icons.add,
+                                                  size: 30,
+                                                  color: Colors.white,
+                                                ))),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                  // Lista de palavras
+                                  Expanded(
+                                    flex: 1,
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                          right: 15, bottom: 15, top: 15),
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              color: ColorsApp.color2,
+                                              borderRadius:
+                                                  BorderRadius.circular(8)),
+                                          child: Column(
+                                            children: words.map((word) {
+                                              return Padding(
+                                                padding:
+                                                    const EdgeInsets.all(8.0),
+                                                child: ListTile(
+                                                  title: Text(
+                                                    word,
+                                                    style: GoogleFonts.girassol(
+                                                      fontSize: 20,
+                                                      textStyle: TextStyle(
+                                                          color: ColorsApp
+                                                              .letters),
+                                                    ),
+                                                  ),
+                                                  trailing: IconButton(
+                                                    icon: const Icon(
+                                                        Icons.delete,
+                                                        color: Colors.red),
+                                                    onPressed: () {
+                                                      BackgroundMusicPlayer
+                                                          .loadMusic2();
+                                                      BackgroundMusicPlayer
+                                                          .playBackgroundMusic(
+                                                              2);
+                                                    },
+                                                  ),
+                                                ),
+                                              );
+                                            }).toList(),
+                                          )),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                                "1.7 - Também é possível apagar a categoria ou voltar a tela de categorias salvando automaticamente as suas mudanças",
+                                style: GoogleFonts.girassol(
+                                    fontSize: 20,
+                                    textStyle:
+                                        TextStyle(color: ColorsApp.letters))),
+                            const SizedBox(height: 20),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Column(
+                                  children: [
+                                    CustomIconButton(
+                                        elevation: 5,
+                                        buttonColor: ColorsApp.color1,
+                                        onPressed: () async {
+                                          BackgroundMusicPlayer.loadMusic2();
+                                          BackgroundMusicPlayer
+                                              .playBackgroundMusic(2);
+                                        },
+                                        icon: Icons.arrow_back,
+                                        padding: 0),
+                                    Text("Botão de salvar e voltar",
+                                        style: GoogleFonts.girassol(
+                                            fontSize: 15,
+                                            textStyle: TextStyle(
+                                                color: ColorsApp.letters)))
+                                  ],
+                                ),
+                                const SizedBox(width: 20),
+                                Column(
+                                  children: [
+                                    CustomIconButton(
+                                        elevation: 5,
+                                        buttonColor: ColorsApp.color1,
+                                        onPressed: () async {
+                                          BackgroundMusicPlayer.loadMusic2();
+                                          BackgroundMusicPlayer
+                                              .playBackgroundMusic(2);
+                                        },
+                                        icon: Icons.delete,
+                                        padding: 0),
+                                    Text("Botão de apagar",
+                                        style: GoogleFonts.girassol(
+                                            fontSize: 15,
+                                            textStyle: TextStyle(
+                                                color: ColorsApp.letters)))
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                                "1.8 - Após configurar a partida de acordo com sua preferência, clique no botão 'Iniciar jogo' para começar",
                                 style: GoogleFonts.girassol(
                                     fontSize: 20,
                                     textStyle:

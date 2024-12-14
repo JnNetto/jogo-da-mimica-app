@@ -53,7 +53,7 @@ class WordsController {
             await _listsDatabase.getCategoryList(key) ?? [];
       }
       if (await hasNetwork() && isItToSave && userEmail != "") {
-        await _wordsRepository.saveCategories(allDataCategories);
+        await _wordsRepository.saveCategories(allDataCategories, context);
       }
       return allDataCategories;
     } on Exception catch (e) {
@@ -72,7 +72,7 @@ class WordsController {
       // ignore: no_leading_underscores_for_local_identifiers
       bool _hasNetwork = await hasNetwork();
       if (_hasNetwork && userEmail != "") {
-        await _wordsRepository.addCustomCategory(categoryName);
+        await _wordsRepository.addCustomCategory(categoryName, context);
       }
     } on Exception catch (e) {
       Failure.showErrorDialog(context, e);
@@ -87,7 +87,7 @@ class WordsController {
       await hasNetwork();
       await _listsDatabase.deleteCategory(categoryName);
       if (await hasNetwork() && userEmail != "") {
-        await _wordsRepository.deleteCustomCategory(categoryName);
+        await _wordsRepository.deleteCustomCategory(categoryName, context);
       }
     } on Exception catch (e) {
       Failure.showErrorDialog(context, e);
@@ -102,6 +102,10 @@ class WordsController {
     try {
       await hasNetwork();
       await _listsDatabase.addItemToCategory(categoryName, newWord);
+      if (await hasNetwork() && userEmail != "") {
+        await _wordsRepository.addItemToCustomCategory(
+            categoryName, newWord, context);
+      }
     } on Exception catch (e) {
       Failure.showErrorDialog(context, e);
     } finally {
@@ -115,6 +119,10 @@ class WordsController {
     try {
       await hasNetwork();
       await _listsDatabase.deleteItemToCategory(categoryName, word);
+      if (await hasNetwork() && userEmail != "") {
+        await _wordsRepository.removeItemFromCustomCategory(
+            categoryName, word, context);
+      }
     } on Exception catch (e) {
       Failure.showErrorDialog(context, e);
     } finally {
@@ -126,8 +134,15 @@ class WordsController {
       String categoryName, BuildContext context) async {
     showLoadingDialog(context);
     try {
+      List<String>? words;
       await hasNetwork();
-      List<String>? words = await _listsDatabase.getCategoryList(categoryName);
+      if (await hasNetwork() && userEmail != "") {
+        words = await _wordsRepository.getItemsFromCustomCategory(
+            categoryName, context);
+      } else {
+        words = await _listsDatabase.getCategoryList(categoryName);
+      }
+
       return words;
     } on Exception catch (e) {
       Failure.showErrorDialog(context, e);
